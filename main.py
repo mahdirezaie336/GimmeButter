@@ -37,77 +37,40 @@ def parse_map() -> (list, State):
 
 
 def successor(state: State) -> list:
-    # TODO: Reduce code duplication
     next_states = []
     robot_y, robot_x = state.robot[0], state.robot[1]
 
-    # Moving up handling
-    if robot_y > 0:
-        # Checking if there is a butter upside
-        if (robot_y-1, robot_x) not in state.butters:           # There is no butters upside
+    def try_move_robot(y: int, x: int):
+        """ Moves robot without considering bounds. """
+
+        # Checking diagonal movement
+        if x * y != 0:
+            raise Exception('Diagonal moving is not allowed.')
+
+        # Checking bounds
+        if robot_x + x >= w or robot_x + x < 0 or robot_y + y >= h or robot_y + y < 0:
+            return
+
+        # Checking if there is a butter around
+        if (robot_y + y, robot_x + x) not in state.butters:             # There is no butters around
             next_states.append(
-                State((robot_y-1, robot_x), state.butters.copy())
+                State((robot_y + y, robot_x + x), state.butters.copy())
             )
-        else:                                                   # There is a butter upside
+        else:                                                           # There is a butter around
             # Butter not on bound condition
-            if robot_y != 1:
+            if (y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or\
+                    (x == -1 and robot_x != 1) or (x == 1 and robot_y != w - 2):
                 new_butters = state.butters.copy()
-                new_butters.remove((robot_y-1, robot_x))        # Moving butter
-                new_butters.append((robot_y-2, robot_x))
+                new_butters.remove((robot_y + y, robot_x + x))  # Moving butter
+                new_butters.append((robot_y + 2 * y, robot_x + 2 * x))
                 next_states.append(
-                    State((robot_y-1, robot_x), new_butters)
+                    State((robot_y + y, robot_x + x), new_butters)
                 )
 
-    # Moving down handling
-    if robot_y < h - 1:
-        # Checking if there is a butter downside
-        if (robot_y + 1, robot_x) not in state.butters:         # There is no butters downside
-            next_states.append(
-                State((robot_y + 1, robot_x), state.butters.copy())
-            )
-        else:                                                   # There is a butter downside
-            # Butter not on bound condition
-            if robot_y != h - 2:
-                new_butters = state.butters.copy()
-                new_butters.remove((robot_y + 1, robot_x))      # Moving butter
-                new_butters.append((robot_y + 2, robot_x))
-                next_states.append(
-                    State((robot_y + 1, robot_x), new_butters)
-                )
-
-    # Moving right handling
-    if robot_x < w - 1:
-        # Checking if there is a butter right side
-        if (robot_y, robot_x + 1) not in state.butters:         # There is no butters right side
-            next_states.append(
-                State((robot_y, robot_x + 1), state.butters.copy())
-            )
-        else:                                                   # There is a butter right side
-            # Butter not on bound condition
-            if robot_x != w - 2:
-                new_butters = state.butters.copy()
-                new_butters.remove((robot_y, robot_x + 1))      # Moving butter
-                new_butters.append((robot_y, robot_x + 2))
-                next_states.append(
-                    State((robot_y, robot_x + 1), new_butters)
-                )
-
-    # Moving left handling
-    if robot_x > 0:
-        # Checking if there is a butter left side
-        if (robot_y, robot_x - 1) not in state.butters:         # There is no butters left side
-            next_states.append(
-                State((robot_y, robot_x - 1), state.butters.copy())
-            )
-        else:                                                   # There is a butter left side
-            # Butter not on bound condition
-            if robot_x != 1:
-                new_butters = state.butters.copy()
-                new_butters.remove((robot_y, robot_x - 1))      # Moving butter
-                new_butters.append((robot_y, robot_x - 2))
-                next_states.append(
-                    State((robot_y, robot_x - 1), new_butters)
-                )
+    try_move_robot(1, 0)
+    try_move_robot(-1, 0)
+    try_move_robot(0, 1)
+    try_move_robot(0, -1)
 
     return next_states
 
