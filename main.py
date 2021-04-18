@@ -3,12 +3,12 @@ from constants import Consts
 
 
 w, h = 0, 0
+map_array = []           # The map array
 
 
-def parse_map() -> (list, list, State):
+def parse_map() -> (list, State):
     """ Reads the map file which is addressed in MAP_FILE variable. """
     global w, h
-    map_list = []       # The map array
     butters = []        # List of butters on map
     points = []         # List of goal points on map
     robot = (0, 0)      # Robot position
@@ -31,9 +31,9 @@ def parse_map() -> (list, list, State):
                         robot = (j, i)
                     # Removing object from map
                     parts[i] = item[0]
-            map_list.append(parts)
+            map_array.append(parts)
             j += 1
-    return map_list, points, State(robot, butters)
+    return points, State(robot, butters)
 
 
 def __main__():
