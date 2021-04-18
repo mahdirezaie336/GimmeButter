@@ -1,6 +1,7 @@
 from state import State
+from constants import Consts
 
-MAP_FILE = './map.txt'
+
 w, h = 0, 0
 
 
@@ -12,7 +13,7 @@ def parse_map() -> (list, list, State):
     points = []         # List of goal points on map
     robot = (0, 0)      # Robot position
 
-    with open(MAP_FILE, 'r') as map_file:
+    with open(Consts.MAP_FILE, 'r') as map_file:
         # Reading map width and height
         w, h = [int(x) for x in map_file.readline().split()]
         # Reading map content
@@ -35,4 +36,6 @@ def parse_map() -> (list, list, State):
     return map_list, points, State(robot, butters)
 
 
-print(parse_map())
+def __main__():
+
+    pass
