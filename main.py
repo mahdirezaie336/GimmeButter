@@ -37,6 +37,7 @@ def parse_map() -> (list, State):
 
 
 def successor(state: State) -> list:
+    # TODO: Reduce code duplication
     next_states = []
     robot_y, robot_x = state.robot[0], state.robot[1]
 
@@ -108,11 +109,18 @@ def successor(state: State) -> list:
                     State((robot_y, robot_x - 1), new_butters)
                 )
 
+    return next_states
+
 
 def ids_search(init_state: State):
     pass
 
 
 def __main__():
+    points, init_state = parse_map()
+    print(init_state)
+    for row in successor(init_state):
+        print(row)
 
-    pass
+
+__main__()
