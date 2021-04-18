@@ -1,16 +1,37 @@
-# This is a sample Python script.
+from state import State
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+MAP_FILE = './map.txt'
+w, h = 0, 0
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def parse_map() -> (list, list, State):
+    global w, h
+    map_list = []       # The map array
+    butters = []        # List of butters on map
+    points = []         # List of goal points on map
+    robot = (0, 0)      # Robot position
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    with open(MAP_FILE, 'r') as map_file:
+        # Reading map width and height
+        w, h = [int(x) for x in map_file.readline().split()]
+        # Reading map content
+        j = 0
+        for row in map_file:
+            parts = row.split()
+            for i, item in enumerate(parts):
+                # If found something on block
+                if len(item) > 1:
+                    if item[1] == 'b':
+                        butters.append((j, i))
+                    elif item[1] == 'p':
+                        points.append((j, i))
+                    elif item[1] == 'r':
+                        robot = (j, i)
+                    # Removing object from map
+                    parts[i] = item[0]
+            map_list.append(parts)
+            j += 1
+    return map_list, points, State(robot, butters)
+
+
+print(parse_map())
