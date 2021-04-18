@@ -5,6 +5,7 @@ w, h = 0, 0
 
 
 def parse_map() -> (list, list, State):
+    """ Reads the map file which is addressed in MAP_FILE variable. """
     global w, h
     map_list = []       # The map array
     butters = []        # List of butters on map
