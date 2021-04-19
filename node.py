@@ -9,22 +9,21 @@ class Node:
         self.state = state
         self.parent = parent
         self.children = children
-        self.book_keeping = [action,            # Action performed on parent
-                             depth,             # Depth of this node
-                             path_cost,         # Cost from root to here
-                             False              # Expanded?
-                             ]
+        self.action = action                # Action performed on parent
+        self.depth = depth                  # Depth of this node
+        self.path_cost = path_cost,         # Cost from root to here
+        self.is_expanded = False            # Expanded?
 
     def expand(self, actions: list[tuple[State, tuple, int]]) -> list['Node']:
         children = []
         for action in actions:
-            cost = self.book_keeping[2] + action[3]
-            depth = self.book_keeping[1] + 1
+            cost = self.path_cost + action[3]
+            depth = self.depth + 1
             parent = self
             new_node = Node(action[0], action[1], depth, parent, cost)
             children.append(new_node)
 
-        self.book_keeping[3] = True
+        self.is_expanded = True
         self.children.extend(children)
         return children
 

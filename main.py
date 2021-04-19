@@ -38,7 +38,10 @@ def parse_map() -> State:
 
 
 def ids_search(init_state: State):
-    
+
+    def dls_search(k: int):
+        pass
+
     pass
 
 
