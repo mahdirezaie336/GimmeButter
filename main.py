@@ -3,14 +3,14 @@ from constants import Consts
 
 
 w, h = 0, 0
-map_array = []           # The map array
+map_array = []              # The map array
+points = []                 # List of goal points on map
 
 
-def parse_map() -> (list, State):
+def parse_map() -> State:
     """ Reads the map file which is addressed in MAP_FILE variable. """
     global w, h
     butters = []        # List of butters on map
-    points = []         # List of goal points on map
     robot = (0, 0)      # Robot position
 
     with open(Consts.MAP_FILE, 'r') as map_file:
@@ -33,69 +33,19 @@ def parse_map() -> (list, State):
                     parts[i] = item[0]
             map_array.append(parts)
             j += 1
-    return points, State(robot, butters)
 
-
-def successor(state: State) -> list:
-    next_states = []
-    robot_y, robot_x = state.robot[0], state.robot[1]
-
-    def is_block(y: int, x: int):
-        return map_array[y][x].lower() == 'x'
-
-    def try_move_robot(y: int, x: int):
-        """ Tries to move robot and push butters and saves new state in next_states array. """
-
-        # Checking diagonal movement
-        if x * y != 0:
-            raise Exception('Diagonal moving is not allowed.')
-
-        # Checking bounds
-        if robot_x + x >= w or robot_x + x < 0 or robot_y + y >= h or robot_y + y < 0:
-            return
-
-        # Checking blocks
-        if is_block(robot_y + y, robot_x + x):
-            return
-
-        # Checking if there is a butter around
-        if (robot_y + y, robot_x + x) not in state.butters:             # There is no butters around
-            next_states.append(
-                State((robot_y + y, robot_x + x), state.butters.copy())
-            )
-        else:                                                           # There is a butter around
-            # Butter not on bound condition
-            if (y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or\
-                    (x == -1 and robot_x != 1) or (x == 1 and robot_y != w - 2):
-
-                # if there is block behind butter
-                if is_block(robot_y + 2 * y, robot_x + 2 * x):
-                    return
-
-                # Moving butter
-                new_butters = state.butters.copy()
-                new_butters.remove((robot_y + y, robot_x + x))
-                new_butters.append((robot_y + 2 * y, robot_x + 2 * x))
-                next_states.append(
-                    State((robot_y + y, robot_x + x), new_butters)
-                )
-
-    try_move_robot(1, 0)
-    try_move_robot(-1, 0)
-    try_move_robot(0, 1)
-    try_move_robot(0, -1)
-
-    return next_states
+    return State(robot, butters)
 
 
 def ids_search(init_state: State):
+    
     pass
 
 
 def __main__():
-    points, init_state = parse_map()
+    init_state = parse_map()
     print(init_state)
-    for row in successor(init_state):
+    for row in State.successor(init_state, map_array, w, h):
         print(row)
 
 
