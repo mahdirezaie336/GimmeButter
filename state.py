@@ -9,13 +9,19 @@ class State:
         return self.butters == other.butters and self.robot == other.robot
 
     def __str__(self):
-        return 'Robot at: ' + str(self.robot) + ' Butters at: ' + str(self.butters)
+        return '"Robot at: ' + str(self.robot) + ' Butters at: ' + str(self.butters) + '"'
 
     def __repr__(self):
         return self.__str__()
 
+    def __hash__(self):
+        h = hash(self.robot)
+        for i in self.butters:
+            h += hash(i)
+        return h
+
     @staticmethod
-    def successor(state: 'State', map_array: list[list[str]], w, h) -> list:
+    def successor(state: 'State', map_array: list[list[str]], w, h) -> list[tuple['State', tuple, int]]:
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
@@ -41,12 +47,13 @@ class State:
             if (robot_y + y, robot_x + x) not in state.butters:  # There is no butters around
                 next_states.append((
                     State((robot_y + y, robot_x + x), state.butters.copy()),
-                    (y, x)
+                    (y, x),
+                    max(int(map_array[robot_y+y][robot_x+x]), int(map_array[robot_y][robot_x]))
                 ))
             else:  # There is a butter around
                 # Butter not on bound condition
                 if (y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or \
-                        (x == -1 and robot_x != 1) or (x == 1 and robot_y != w - 2):
+                        (x == -1 and robot_x != 1) or (x == 1 and robot_x != w - 2):
 
                     # if there is block behind butter
                     if is_block(robot_y + 2 * y, robot_x + 2 * x):
@@ -58,7 +65,8 @@ class State:
                     new_butters.append((robot_y + 2 * y, robot_x + 2 * x))
                     next_states.append((
                         State((robot_y + y, robot_x + x), new_butters),
-                        (y, x)
+                        (y, x),
+                        max(int(map_array[robot_y + y][robot_x + x]), int(map_array[robot_y][robot_x]))
                     ))
 
         try_move_robot(1, 0)

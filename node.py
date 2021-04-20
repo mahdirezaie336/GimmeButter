@@ -11,13 +11,13 @@ class Node:
         self.children = children
         self.action = action                # Action performed on parent
         self.depth = depth                  # Depth of this node
-        self.path_cost = path_cost,         # Cost from root to here
+        self.path_cost = path_cost          # Cost from root to here
         self.is_expanded = False            # Expanded?
 
     def expand(self, actions: list[tuple[State, tuple, int]]) -> list['Node']:
         children = []
         for action in actions:
-            cost = self.path_cost + action[3]
+            cost = self.path_cost + action[2]
             depth = self.depth + 1
             parent = self
             new_node = Node(action[0], action[1], depth, parent, cost)
@@ -34,4 +34,4 @@ class Node:
         return self.__str__()
 
     def __str__(self):
-        return 'State: ' + str(self.state) + ' | ' + str(self.book_keeping)
+        return 'Action: ' + str(self.action) + ' | Depth' + str(self.depth)
