@@ -1,6 +1,7 @@
 from state import State
 from constants import Consts
 from node import Node
+import pygame
 
 
 w, h = 0, 0
@@ -77,13 +78,24 @@ def ids_search(init_state: State):
 
 
 def __main__():
+    # Initializing map and pygame
     init_state = parse_map()
+    pygame.init()
+    screen = pygame.display.set_mode((Consts.SCREEN_WIDTH, Consts.SCREEN_HEIGHT))
+    screen.fill((198, 163, 138))
+    # (131, 60, 11)
 
+    # Finding way
     result = ids_search(init_state)
-    print(result.state)
-    watchdog = 0
-    while result is not None:
-        print(result.state)
-        result = result.parent
+
+    while True:
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                exit()
+
+        pygame.display.update()
+        pygame.time.wait(100)
+
 
 __main__()
