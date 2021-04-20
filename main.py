@@ -82,11 +82,11 @@ def __main__():
     init_state = parse_map()
     pygame.init()
     screen = pygame.display.set_mode((Consts.SCREEN_WIDTH, Consts.SCREEN_HEIGHT))
-    screen.fill((198, 163, 138))
-    # (131, 60, 11)
+    screen.fill(Consts.BACKGROUND)
 
     # Finding way
     result = ids_search(init_state)
+    print(result.state)
 
     while True:
         events = pygame.event.get()
