@@ -4,6 +4,7 @@ import threading
 
 
 class Display:
+    display_thread: threading.Thread
 
     def __init__(self, map_array, w, h, points):
         self.map_array = map_array
@@ -25,7 +26,17 @@ class Display:
             rect_height = sh - 2 * Consts.SCREEN_MARGIN_SIZE
             cell_size = int(rect_height / h)
             rect_width = cell_size * w
-        pygame.draw.rect(self.screen, )
+
+        init_y = (sh - rect_height) / 2
+        init_x = (sw - rect_width) / 2
+        for j in range(h):
+            for i in range(w):
+                pygame.draw.rect(self.screen, Consts.CELL_COLOR, (init_x + i * cell_size, init_y + j * cell_size,
+                                                                  cell_size, cell_size), 0)
+                pygame.draw.rect(self.screen, (0, 0, 0), (init_x + i * cell_size, init_y + j * cell_size,
+                                                          cell_size, cell_size), 1)
+
+        pygame.display.update()
         # Threading part
         self.display_thread = None
 
