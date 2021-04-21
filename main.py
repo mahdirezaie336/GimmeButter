@@ -85,25 +85,31 @@ def ids_search(init_state: State) -> Node:
 def __main__():
     # Initializing map and pygame
     init_state = parse_map()
-    display = Display(map_array, w, h, points)
+    # print(State.successor(init_state, map_array, w, h))
 
+    display = Display(map_array, w, h, points)
     # Finding way
     result = ids_search(init_state)
 
+    # Putting path to goal in list
     result_list = []
     watchdog = 0
     while result is not None:
         watchdog += 1
-        if watchdog > 50:
+        if watchdog > 1000:
             raise Exception('Watchdog limit exceeded')
         result_list.append(result.state)
         result = result.parent
-
     result_list.reverse()
 
+    # Starting display
     display.update(init_state)
     display.begin_display()
 
+    # Showing way
+    if len(result_list) == 0:
+        print('There is no way.')
+        return
     for state in result_list:
         time.sleep(0.5)
         display.update(state)

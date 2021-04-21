@@ -1,6 +1,7 @@
 import pygame
 from constants import Consts
 import threading
+import sys
 
 from state import State
 
@@ -96,13 +97,14 @@ class Display:
                 events = pygame.event.get()
                 for event in events:
                     if event.type == pygame.QUIT:
-                        exit()
+                        sys.exit(0)
 
                 pygame.display.update()
                 pygame.time.wait(100)
 
         # Starting thread
         self.display_thread = threading.Thread(name='Display', target=infinite_loop)
+        self.display_thread.setDaemon(False)
         self.display_thread.start()
 
     @staticmethod

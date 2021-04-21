@@ -5,7 +5,7 @@ class Consts:
 
     # IDS
     FIRST_K = 0
-    LAST_K = 20
+    LAST_K = 50
 
     # PyGame Window Features
     SCREEN_WIDTH = 640
