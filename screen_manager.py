@@ -2,6 +2,8 @@ import pygame
 from constants import Consts
 import threading
 
+from state import State
+
 
 class Display:
 
@@ -20,19 +22,6 @@ class Display:
         self.screen.fill(Consts.BACKGROUND)
 
         # Setting cell size and other sizes
-        self.draw_cells()
-
-        pygame.display.update()
-        # Threading part
-        self.display_thread = None
-
-    def update(self):
-        pass
-
-    def draw_cells(self):
-        sw, sh = Consts.SCREEN_WIDTH, Consts.SCREEN_HEIGHT
-        w, h = self.w, self.h
-
         if w / h > sw / sh:
             rect_width = sw - 2 * Consts.SCREEN_MARGIN_SIZE
             cell_size = int(rect_width / w)
@@ -41,6 +30,37 @@ class Display:
             rect_height = sh - 2 * Consts.SCREEN_MARGIN_SIZE
             cell_size = int(rect_height / h)
             rect_width = cell_size * w
+        self.cell_size = cell_size
+        self.rect_width = rect_width
+        self.rect_height = rect_height
+
+        # Threading part
+        self.display_thread = None
+
+        # Loading images
+        self.butter_image = pygame.image.load(Consts.BUTTER_IMAGE)
+        self.butter_image = pygame.transform.scale(self.butter_image, (cell_size, cell_size))
+        self.robot_image = pygame.image.load(Consts.ROBOT_IMAGE)
+        self.robot_image = pygame.transform.scale(self.robot_image, (cell_size, cell_size))
+        self.x_image = pygame.image.load(Consts.X_IMAGE)
+        self.x_image = pygame.transform.scale(self.x_image, (cell_size, cell_size))
+
+        self.draw_cells()
+        pygame.display.update()
+
+    def update(self, state: State):
+        self.draw_cells()
+        robot_y, robot_x = state.robot
+        self.draw_in_position(robot_y, robot_x, self.robot_image)
+        for butter in state.butters:
+            self.draw_in_position(butter[0], butter[1], self.butter_image)
+        pygame.display.update()
+
+    def draw_cells(self):
+        sw, sh = Consts.SCREEN_WIDTH, Consts.SCREEN_HEIGHT
+        w, h = self.w, self.h
+        rect_width, rect_height = self.rect_width, self.rect_height
+        cell_size = self.cell_size
 
         # Drawing cells
         init_y = (sh - rect_height) / 2
@@ -56,6 +76,17 @@ class Display:
                 # Drawing Rectangles
                 pygame.draw.rect(self.screen, color, (x, y, cell_size, cell_size), 0)
                 pygame.draw.rect(self.screen, (0, 0, 0), (x, y, cell_size, cell_size), 1)
+
+        # Drawing X Points
+        for p in self.points:
+            self.draw_in_position(p[0], p[1], self.x_image)
+
+    def draw_in_position(self, y: int, x: int, image):
+        init_y = (Consts.SCREEN_HEIGHT - self.rect_height) / 2
+        init_x = (Consts.SCREEN_WIDTH - self.rect_width) / 2
+        pos_x = init_x + x * self.cell_size
+        pos_y = init_y + y * self.cell_size
+        self.screen.blit(image, (pos_x, pos_y))
 
     def begin_display(self):
 

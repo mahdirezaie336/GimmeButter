@@ -2,6 +2,7 @@ from state import State
 from constants import Consts
 from node import Node
 from screen_manager import Display
+import time
 
 
 w, h = 0, 0
@@ -39,7 +40,7 @@ def parse_map() -> State:
     return State(robot, butters)
 
 
-def ids_search(init_state: State):
+def ids_search(init_state: State) -> Node:
 
     # Implementing DLS to be used in IDS
     def dls_search(k: int) -> Node:
@@ -54,17 +55,21 @@ def ids_search(init_state: State):
         # Beginning non-recursive DLS
         frontier.append(root_node)
         while len(frontier) > 0:
-            last = frontier.pop()
-            actions = State.successor(last.state, map_array, w, h)
+            last = frontier.pop(0)
+            # Checking if the state is goal state
             if State.is_goal(last.state, points):
                 return last
 
+            actions = State.successor(last.state, map_array, w, h)
             visited_states[last.state] = True
             for child in last.expand(actions):
+                # Add child to frontier
                 if child.depth < k and not visited_states.get(child.state, False):
                     frontier.append(child)
-                if len(frontier) > 50:
+                # Handling Errors
+                if len(frontier) > 1000:
                     raise Exception('Frontier overflow')
+
         # If there is no result in DLS
         return None
 
@@ -84,9 +89,24 @@ def __main__():
 
     # Finding way
     result = ids_search(init_state)
-    print(result.state)
 
+    result_list = []
+    watchdog = 0
+    while result is not None:
+        watchdog += 1
+        if watchdog > 50:
+            raise Exception('Watchdog limit exceeded')
+        result_list.append(result.state)
+        result = result.parent
+
+    result_list.reverse()
+
+    display.update(init_state)
     display.begin_display()
+
+    for state in result_list:
+        time.sleep(0.5)
+        display.update(state)
 
 
 __main__()
