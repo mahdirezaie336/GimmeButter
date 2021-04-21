@@ -4,6 +4,7 @@ import threading
 
 
 class Display:
+
     display_thread: threading.Thread
 
     def __init__(self, map_array, w, h, points):
@@ -19,6 +20,19 @@ class Display:
         self.screen.fill(Consts.BACKGROUND)
 
         # Setting cell size and other sizes
+        self.draw_cells()
+
+        pygame.display.update()
+        # Threading part
+        self.display_thread = None
+
+    def update(self):
+        pass
+
+    def draw_cells(self):
+        sw, sh = Consts.SCREEN_WIDTH, Consts.SCREEN_HEIGHT
+        w, h = self.w, self.h
+
         if w / h > sw / sh:
             rect_width = sw - 2 * Consts.SCREEN_MARGIN_SIZE
             cell_size = int(rect_width / w)
@@ -35,20 +49,13 @@ class Display:
             for i in range(w):
                 x = init_x + i * cell_size
                 y = init_y + j * cell_size
-                if map_array[j][i] == 'x':
+                if self.map_array[j][i] == 'x':
                     color = Consts.BLOCK_COLOR
                 else:
-                    color = Display.darker(Consts.CELL_COLOR, int(map_array[j][i]))
+                    color = Display.darker(Consts.CELL_COLOR, int(self.map_array[j][i]))
                 # Drawing Rectangles
                 pygame.draw.rect(self.screen, color, (x, y, cell_size, cell_size), 0)
                 pygame.draw.rect(self.screen, (0, 0, 0), (x, y, cell_size, cell_size), 1)
-
-        pygame.display.update()
-        # Threading part
-        self.display_thread = None
-
-    def update(self):
-        pass
 
     def begin_display(self):
 

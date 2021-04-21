@@ -73,7 +73,7 @@ def ids_search(init_state: State):
         result = dls_search(i)
         if result is not None:
             return result
-    # Id there is no result in IDS
+    # If there is no result in IDS
     return None
 
 
