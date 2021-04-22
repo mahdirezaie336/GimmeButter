@@ -104,7 +104,6 @@ class Display:
 
         # Starting thread
         self.display_thread = threading.Thread(name='Display', target=infinite_loop)
-        self.display_thread.setDaemon(False)
         self.display_thread.start()
 
     @staticmethod
