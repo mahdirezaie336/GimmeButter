@@ -21,7 +21,7 @@ class State:
         return h
 
     @staticmethod
-    def successor(state: 'State', map_array: list[list[str]], w, h) -> list[tuple['State', tuple, int]]:
+    def successor(state: 'State', map_array: list[list[str]], w, h, points: list) -> list[tuple['State', tuple, int]]:
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
@@ -55,14 +55,19 @@ class State:
                 if (y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or \
                         (x == -1 and robot_x != 1) or (x == 1 and robot_x != w - 2):
 
-                    # if there is block behind butter
-                    if is_block(robot_y + 2 * y, robot_x + 2 * x):
+                    # If butter is on a point
+                    if (robot_y + y, robot_x + x) in points:
+                        return
+
+                    # if there is block or another butter behind the butter
+                    r2y, r2x = robot_y + 2 * y, robot_x + 2 * x
+                    if is_block(r2y, r2x) or ((r2y, r2x) in state.butters):
                         return
 
                     # Moving butter
                     new_butters = state.butters.copy()
                     new_butters.remove((robot_y + y, robot_x + x))
-                    new_butters.append((robot_y + 2 * y, robot_x + 2 * x))
+                    new_butters.append((r2y, r2x))
                     next_states.append((
                         State((robot_y + y, robot_x + x), new_butters),
                         (y, x),

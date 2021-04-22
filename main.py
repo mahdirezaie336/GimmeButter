@@ -60,7 +60,7 @@ def ids_search(init_state: State) -> Node:
             if State.is_goal(last.state, points):
                 return last
 
-            actions = State.successor(last.state, map_array, w, h)
+            actions = State.successor(last.state, map_array, w, h, points)
             visited_states[last.state] = True
             for child in last.expand(actions):
                 # Add child to frontier
