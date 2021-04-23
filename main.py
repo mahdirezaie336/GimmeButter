@@ -10,7 +10,8 @@ points = []  # List of goal points on map
 
 
 def parse_map() -> State:
-    """ Reads the map file which is addressed in MAP_FILE variable. """
+    """ Reads the map file which is addressed in MAP_FILE variable.
+        :returns The initial state"""
     global w, h
     butters = []  # List of butters on map
     robot = (0, 0)  # Robot position
@@ -44,7 +45,6 @@ def ids_search(init_state: State) -> Node:
     # Implementing DLS to be used in IDS
     def dls_search(limit: int, depth: int, node: Node) -> Node:
         """ This DLS implementation is used in IDS search.
-            :param visited_states:
             :param limit: Maximum depth
             :param depth: The explored depth until now
             :param node: The node the expand next
