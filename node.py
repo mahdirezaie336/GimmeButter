@@ -34,4 +34,4 @@ class Node:
         return self.__str__()
 
     def __str__(self):
-        return 'Action: ' + str(self.action) + ' | Depth' + str(self.depth)
+        return 'State: ' + str(self.state) + ' | Depth' + str(self.depth)

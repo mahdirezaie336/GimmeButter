@@ -4,7 +4,7 @@ class Consts:
     MAP_FILE = './map.txt'
 
     # IDS
-    FIRST_K = 0
+    FIRST_K = 12
     LAST_K = 50
 
     # PyGame Window Features

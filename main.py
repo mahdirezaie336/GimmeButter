@@ -62,9 +62,9 @@ def ids_search(init_state: State) -> Node:
 
             actions = State.successor(last.state, map_array, w, h, points)
             visited_states[last.state] = True
-            for child in last.expand(actions):
+            for child in last.expand(actions).reverse():
                 # Add child to frontier
-                if child.depth < k and not visited_states.get(child.state, False):
+                if child.depth < k and child.state not in visited_states:
                     frontier.append(child)
                 # Handling Errors
                 if len(frontier) > 1000:
