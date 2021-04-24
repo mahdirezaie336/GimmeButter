@@ -55,15 +55,20 @@ def ids_search(init_state: State) -> Node:
             actions = State.successor(node.state, map_array, w, h, points)
             # print(actions)
             visited_states[node.state] = True
-            for child in node.expand(actions):
+            for child in node.expand(actions)[::-1]:
 
                 if State.is_goal(child.state, points):
                     return child
 
+                # Recursive calling
                 r = dls_search(limit, depth + 1, child)
                 if r is not None:
                     res = r
                     break
+
+                # To avoid adding non-visited states into visited states list
+                if child.state in visited_states:
+                    del visited_states[child.state]
 
         return res
 
