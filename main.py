@@ -10,7 +10,8 @@ points = []  # List of goal points on map
 
 
 def parse_map() -> State:
-    """ Reads the map file which is addressed in MAP_FILE variable. """
+    """ Reads the map file which is addressed in MAP_FILE variable.
+        :returns The initial state"""
     global w, h
     butters = []  # List of butters on map
     robot = (0, 0)  # Robot position
@@ -42,35 +43,39 @@ def parse_map() -> State:
 def ids_search(init_state: State) -> Node:
 
     # Implementing DLS to be used in IDS
-    def dls_search(limit: int, depth: int, node: Node) -> Node:
+    def dls_search(k: int) -> Node:
         """ This DLS implementation is used in IDS search.
-            :param limit: Maximum depth
-            :param depth: The explored depth until now
-            :param node: The node the expand next
+            :param k Maximum depth
             :returns Node of goal if Goal state is found"""
 
-        res = None
-        if depth < limit and node.state not in visited_states:
-            actions = State.successor(node.state, map_array, w, h, points)
-            # print(actions)
-            visited_states[node.state] = True
-            for child in node.expand(actions):
+        frontier = []  # Frontier stack for searching
+        visited_states = {}  # Visited states list
+        root_node = Node(init_state, None, 0, None, 0)
 
-                if State.is_goal(child.state, points):
-                    return child
+        # Beginning non-recursive DLS
+        frontier.append(root_node)
+        while len(frontier) > 0:
+            last = frontier.pop()
+            # Checking if the state is goal state
+            if State.is_goal(last.state, points):
+                return last
 
-                r = dls_search(limit, depth + 1, child)
-                if r is not None:
-                    res = r
-                    break
+            actions = State.successor(last.state, map_array, w, h, points)
+            visited_states[last.state] = True
+            for child in last.expand(actions):
+                # Add child to frontier
+                if child.depth < k and not visited_states.get(child.state, False):
+                    frontier.append(child)
+                # Handling Errors
+                if len(frontier) > 1000:
+                    raise Exception('Frontier overflow')
 
-        return res
+        # If there is no result in DLS
+        return None
 
     # IDS Implementation
     for i in range(Consts.FIRST_K, Consts.LAST_K):
-        root_node = Node(init_state, None, 0, None, 0)
-        visited_states = {}
-        result = dls_search(i, 0, root_node)
+        result = dls_search(i)
         if result is not None:
             return result
     # If there is no result in IDS
@@ -82,7 +87,6 @@ def __main__():
     init_state = parse_map()
     # print(State.successor(init_state, map_array, w, h))
 
-    display = Display(map_array, w, h, points)
     # Finding way
     result = ids_search(init_state)
 
@@ -98,6 +102,7 @@ def __main__():
     result_list.reverse()
 
     # Starting display
+    display = Display(map_array, w, h, points)
     display.update(init_state)
     display.begin_display()
 
