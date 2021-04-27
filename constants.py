@@ -4,7 +4,7 @@ class Consts:
     MAP_FILE = './map.txt'
 
     # IDS
-    FIRST_K = 12
+    FIRST_K = 1
     LAST_K = 50
 
     # PyGame Window Features
@@ -18,3 +18,6 @@ class Consts:
     ROBOT_IMAGE = './images/robot.png'
     X_IMAGE = './images/x.png'
 
+    # Times
+    STEP_TIME = 0.3
+    FPS = 24

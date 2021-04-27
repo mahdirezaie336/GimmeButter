@@ -100,7 +100,7 @@ class Display:
                         sys.exit(0)
 
                 pygame.display.update()
-                pygame.time.wait(100)
+                pygame.time.wait(int(1000/Consts.FPS))
 
         # Starting thread
         self.display_thread = threading.Thread(name='Display', target=infinite_loop)

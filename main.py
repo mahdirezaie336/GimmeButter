@@ -7,6 +7,7 @@ import time
 w, h = 0, 0
 map_array = []  # The map array
 points = []  # List of goal points on map
+display = None
 
 
 def parse_map() -> State:
@@ -18,7 +19,7 @@ def parse_map() -> State:
 
     with open(Consts.MAP_FILE, 'r') as map_file:
         # Reading map width and height
-        w, h = [int(x) for x in map_file.readline().split()]
+        h, w = [int(x) for x in map_file.readline().split()]
         # Reading map content
         j = 0
         for row in map_file:
@@ -50,6 +51,12 @@ def ids_search(init_state: State) -> Node:
             :param node: The node the expand next
             :returns Node of goal if Goal state is found"""
 
+        if time.time() - cur_time > 30.0:
+            raise Exception('Time limit exceeded')
+
+        #display.update(node.state)
+        #time.sleep(0.08)
+
         res = None
         if depth < limit and node.state not in visited_states:
             actions = State.successor(node.state, map_array, w, h, points)
@@ -74,6 +81,8 @@ def ids_search(init_state: State) -> Node:
 
     # IDS Implementation
     for i in range(Consts.FIRST_K, Consts.LAST_K):
+        print('Starting with depth', i)
+        cur_time = time.time()
         root_node = Node(init_state, None, 0, None, 0)
         visited_states = {}
         result = dls_search(i, 0, root_node)
@@ -84,11 +93,12 @@ def ids_search(init_state: State) -> Node:
 
 
 def __main__():
+    global display
     # Initializing map and pygame
     init_state = parse_map()
     # print(State.successor(init_state, map_array, w, h))
-
     display = Display(map_array, w, h, points)
+
     # Finding way
     result = ids_search(init_state)
 
@@ -112,7 +122,7 @@ def __main__():
         print('There is no way.')
         return
     for state in result_list:
-        time.sleep(0.5)
+        time.sleep(Consts.STEP_TIME)
         display.update(state)
 
 
