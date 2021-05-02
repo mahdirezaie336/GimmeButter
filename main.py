@@ -42,7 +42,6 @@ def parse_map() -> State:
 
 
 def ids_search(init_state: State) -> Node:
-
     # Implementing DLS to be used in IDS
     def dls_search(limit: int, depth: int, node: Node) -> Node:
         """ This DLS implementation is used in IDS search.
@@ -54,8 +53,8 @@ def ids_search(init_state: State) -> Node:
         if time.time() - cur_time > 30.0:
             raise Exception('Time limit exceeded')
 
-        #display.update(node.state)
-        #time.sleep(0.08)
+        # display.update(node.state)
+        # time.sleep(0.08)
 
         res = None
         if depth < limit and node.state not in visited_states:

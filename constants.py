@@ -19,5 +19,5 @@ class Consts:
     X_IMAGE = './images/x.png'
 
     # Times
-    STEP_TIME = 0.3
+    STEP_TIME = 0.2
     FPS = 24
