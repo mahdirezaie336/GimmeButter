@@ -1,11 +1,16 @@
 class Map:
 
     map_array: list[list[str]]
+    points: list[tuple[int, int]]
 
     def __init__(self, h: int, w: int, map_array=[]):
         self.map = map_array
         self.width = w
         self.height = h
+        self.points = []
+
+    def set_points(self, points):
+        self.points = points
 
     def get_item(self, y, x) -> str:
         return self.map[y][x]
