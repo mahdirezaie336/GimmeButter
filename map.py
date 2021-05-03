@@ -1,6 +1,8 @@
 class Map:
 
-    def __init__(self, map_array: list[list[str]], h: int, w: int):
+    map_array: list[list[str]]
+
+    def __init__(self, h: int, w: int, map_array=[]):
         self.map = map_array
         self.width = w
         self.height = h
