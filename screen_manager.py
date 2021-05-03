@@ -3,6 +3,7 @@ from constants import Consts
 import threading
 import sys
 
+from map import Map
 from state import State
 
 
@@ -10,11 +11,12 @@ class Display:
 
     display_thread: threading.Thread
 
-    def __init__(self, map_array, w, h, points):
-        self.map_array = map_array
+    def __init__(self, map_object: Map):
+        w, h = map_object.w, map_object.h
+        self.map_array = map_object.map_array
         self.w = w
         self.h = h
-        self.points = points
+        self.points = map_object.points
 
         # PyGame part
         pygame.init()

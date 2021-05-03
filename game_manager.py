@@ -1,6 +1,7 @@
 from map import Map
 from file_io import FileIO
 from constants import Consts
+from screen_manager import Display
 from state import State
 from node import Node
 import time
@@ -14,11 +15,14 @@ class GameManager:
 
     def __init__(self):
         self.map = None
-        self.points = []
         self.init_state = None
+        self.display = None
 
         # Reading map file
         self.parse_map()
+
+        # After parsing map it's time to start pygame
+        self.display = Display(self.map)
 
     def parse_map(self):
         map_array = FileIO.read_line_by_line(Consts.MAP_FILE)
@@ -28,6 +32,7 @@ class GameManager:
 
         # Variables to read from map
         butters = []
+        points = []
         robot = (0, 0)
         for j, row in enumerate(map_array):
             for i, col in enumerate(row):
@@ -37,7 +42,7 @@ class GameManager:
                     if col[1] == 'b':
                         butters.append((j, i))
                     elif col[1] == 'p':
-                        self.points.append((j, i))
+                        points.append((j, i))
                     elif col[1] == 'r':
                         robot = (j, i)
                     row[i] = col[0]
@@ -45,10 +50,14 @@ class GameManager:
             # Append row to map
             self.map.append_row(row)
 
+        # Setting map and init state
+        self.map.set_points(points)
+        self.init_state = State(robot, butters)
+
     def start_search(self, search_type: str):
         self.__getattribute__(search_type + '_search')()
 
-    def ids_search(self, init_state: State) -> Node:
+    def ids_search(self) -> Node:
         # Implementing DLS to be used in IDS
         def dls_search(limit: int, depth: int, node: Node) -> Node:
             """ This DLS implementation is used in IDS search.
@@ -65,12 +74,12 @@ class GameManager:
 
             res = None
             if depth < limit and node.state not in visited_states:
-                actions = State.successor(node.state, map_array, w, h, points)
+                actions = State.successor(node.state, self.map)
                 # print(actions)
                 visited_states[node.state] = True
                 for child in node.expand(actions)[::-1]:
 
-                    if State.is_goal(child.state, points):
+                    if State.is_goal(child.state, self.map.points):
                         return child
 
                     # Recursive calling
@@ -89,7 +98,7 @@ class GameManager:
         for i in range(Consts.FIRST_K, Consts.LAST_K):
             print('Starting with depth', i)
             cur_time = time.time()
-            root_node = Node(init_state, None, 0, None, 0)
+            root_node = Node(self.init_state, None, 0, None, 0)
             visited_states = {}
             result = dls_search(i, 0, root_node)
             if result is not None:

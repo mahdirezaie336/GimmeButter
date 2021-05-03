@@ -1,3 +1,6 @@
+from map import Map
+
+
 class State:
 
     # TODO: Immutable making
@@ -21,8 +24,8 @@ class State:
         return h
 
     @staticmethod
-    def successor(state: 'State', map_array: list[list[str]], w, h, points: list) -> list[tuple['State', tuple, int]]:
-
+    def successor(state: 'State', map_object: Map) -> list[tuple['State', tuple, int]]:
+        map_array = map_object.map_array
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
@@ -37,7 +40,7 @@ class State:
                 raise Exception('Diagonal moving is not allowed.')
 
             # Checking bounds
-            if robot_x + x >= w or robot_x + x < 0 or robot_y + y >= h or robot_y + y < 0:
+            if robot_x + x >= map_object.w or robot_x + x < 0 or robot_y + y >= map_object.h or robot_y + y < 0:
                 return
 
             # Checking blocks

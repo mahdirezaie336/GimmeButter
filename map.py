@@ -5,8 +5,8 @@ class Map:
 
     def __init__(self, h: int, w: int, map_array=[]):
         self.map = map_array
-        self.width = w
-        self.height = h
+        self.w = w
+        self.h = h
         self.points = []
 
     def set_points(self, points):
