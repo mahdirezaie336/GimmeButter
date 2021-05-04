@@ -6,7 +6,7 @@ import sys
 
 def __main__():
     arg = sys.argv
-    search_type = 'ids'
+    search_type = 'bd_bfs'
     if len(arg) > 1:
         if arg[1] in ['ids', 'a_start', 'bd_bfs']:
             search_type = arg[1]

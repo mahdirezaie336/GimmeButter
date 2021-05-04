@@ -92,7 +92,22 @@ class GameManager:
         for i, point in enumerate(self.map.points):
             new_butters[i] = point
 
+        # Putting the robot in all possible positions around butter
         for i, point in enumerate(self.map.points):
+            for direction in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                new_y = point[0] + direction[0]
+                new_x = point[1] + direction[1]
+
+                # Checking out of bounds or blocks
+                if self.map.check_out_of_bounds(new_y, new_x) or self.map.is_block(new_y, new_x):
+                    continue
+
+                # Checking butters around butter
+                if (new_y, new_x) in new_butters:
+                    continue
+
+                frontier2.append(State((new_y, new_x), new_butters.copy()))
+
 
         pass
 
