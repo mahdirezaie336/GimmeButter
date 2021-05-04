@@ -12,6 +12,9 @@ class Map:
     def check_out_of_bounds(self, y: int, x: int) -> bool:
         return x >= self.w or x < 0 or y >= self.h or y < 0
 
+    def is_block(self, y: int, x: int):
+        return self.map[y][x].lower() == 'x'
+
     def set_points(self, points):
         self.points = points
 

@@ -31,9 +31,6 @@ class State:
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
-        def is_block(y: int, x: int):
-            return map_array[y][x].lower() == 'x'
-
         def try_move_robot(y: int, x: int):
             """ Tries to move robot and push butters and saves new state in next_states array. """
 
@@ -46,7 +43,7 @@ class State:
                 return
 
             # Checking blocks
-            if is_block(robot_y + y, robot_x + x):
+            if map_object.is_block(robot_y + y, robot_x + x):
                 return
 
             # Checking if there is a butter around
@@ -69,7 +66,7 @@ class State:
 
                     # if there is block or another butter behind the butter
                     r2y, r2x = robot_y + 2 * y, robot_x + 2 * x
-                    if not reverse and (is_block(r2y, r2x) or ((r2y, r2x) in state.butters)):
+                    if not reverse and (map_object.is_block(r2y, r2x) or ((r2y, r2x) in state.butters)):
                         return
 
                     # Moving butter
