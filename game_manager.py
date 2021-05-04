@@ -53,7 +53,7 @@ class GameManager:
         self.map.set_points(points)
         self.init_state = State(robot, butters)
 
-    def start_search(self, search_type: str):
+    def start_search(self, search_type: str) -> list[State]:
         result = self.__getattribute__(search_type + '_search')()
 
         # Putting path to goal in list
@@ -78,6 +78,7 @@ class GameManager:
         for state in result_list:
             time.sleep(Consts.STEP_TIME)
             self.display.update(state)
+        return result_list
 
     def bd_bfs_search(self) -> Node:
 
@@ -86,8 +87,10 @@ class GameManager:
         visited1 = {self.init_state: True}
         visited2 = {}
 
-        # Finding last goal states
-
+        # Putting Butters into points
+        new_butters = self.init_state.butters.copy()
+        for i, point in enumerate(self.map.points):
+            new_butters[i] = point
 
         pass
 

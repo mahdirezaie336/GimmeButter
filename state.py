@@ -24,7 +24,7 @@ class State:
         return h
 
     @staticmethod
-    def successor(state: 'State', map_object: Map, reverse=True) -> list[tuple['State', tuple, int]]:
+    def successor(state: 'State', map_object: Map, reverse=False) -> list[tuple['State', tuple, int]]:
         map_array = map_object.map
         points = map_object.points
         w, h = map_object.w, map_object.h
