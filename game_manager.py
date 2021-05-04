@@ -92,6 +92,8 @@ class GameManager:
         for i, point in enumerate(self.map.points):
             new_butters[i] = point
 
+        for i, point in enumerate(self.map.points):
+
         pass
 
     def ids_search(self) -> Node:

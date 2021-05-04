@@ -42,7 +42,7 @@ class State:
                 raise Exception('Diagonal moving is not allowed.')
 
             # Checking bounds
-            if robot_x + x >= map_object.w or robot_x + x < 0 or robot_y + y >= map_object.h or robot_y + y < 0:
+            if map_object.check_out_of_bounds(robot_y + y, robot_x + x):
                 return
 
             # Checking blocks
