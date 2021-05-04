@@ -8,8 +8,8 @@ import time
 
 
 class GameManager:
+
     map: Map
-    robot: tuple
     init_state: State
 
     def __init__(self):
@@ -78,6 +78,10 @@ class GameManager:
         for state in result_list:
             time.sleep(Consts.STEP_TIME)
             self.display.update(state)
+
+    def bd_bfs_search(self) -> Node:
+
+        pass
 
     def ids_search(self) -> Node:
         # Implementing DLS to be used in IDS
