@@ -8,7 +8,6 @@ import time
 
 
 class GameManager:
-
     map: Map
     robot: tuple
     init_state: State
@@ -55,7 +54,30 @@ class GameManager:
         self.init_state = State(robot, butters)
 
     def start_search(self, search_type: str):
-        self.__getattribute__(search_type + '_search')()
+        result = self.__getattribute__(search_type + '_search')()
+
+        # Putting path to goal in list
+        result_list = []
+        watchdog = 0
+        while result is not None:
+            watchdog += 1
+            if watchdog > 1000:
+                raise Exception('Watchdog limit exceeded')
+            result_list.append(result.state)
+            result = result.parent
+        result_list.reverse()
+
+        # Starting display
+        self.display.update(self.init_state)
+        self.display.begin_display()
+
+        # Showing way
+        if len(result_list) == 0:
+            print('There is no way.')
+            return
+        for state in result_list:
+            time.sleep(Consts.STEP_TIME)
+            self.display.update(state)
 
     def ids_search(self) -> Node:
         # Implementing DLS to be used in IDS
@@ -105,5 +127,3 @@ class GameManager:
                 return result
         # If there is no result in IDS
         return None
-
-
