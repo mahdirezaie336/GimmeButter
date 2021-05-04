@@ -13,7 +13,7 @@ class Display:
 
     def __init__(self, map_object: Map):
         w, h = map_object.w, map_object.h
-        self.map_array = map_object.map_array
+        self.map_array = map_object.map
         self.w = w
         self.h = h
         self.points = map_object.points

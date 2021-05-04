@@ -16,6 +16,6 @@ class Map:
         return self.map[y][x]
 
     def append_row(self, row: list[str]) -> None:
-        if len(row) != self.width:
+        if len(row) != self.w:
             raise ValueError('Invalid size of columns in this row:\n', str(row))
-        Map.map.append(row)
+        self.map.append(row)

@@ -25,7 +25,9 @@ class State:
 
     @staticmethod
     def successor(state: 'State', map_object: Map) -> list[tuple['State', tuple, int]]:
-        map_array = map_object.map_array
+        map_array = map_object.map
+        points = map_object.points
+        w, h = map_object.w, map_object.h
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
