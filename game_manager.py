@@ -81,10 +81,18 @@ class GameManager:
 
     def bd_bfs_search(self) -> Node:
 
+        frontier1 = [self.init_state]
+        frontier2 = []
+        visited1 = {self.init_state: True}
+        visited2 = {}
+
+        # Finding last goal states
+
+
         pass
 
     def ids_search(self) -> Node:
-        # Implementing DLS to be used in IDS
+        # Implementation of DLS to be used in IDS
         def dls_search(limit: int, depth: int, node: Node) -> Node:
             """ This DLS implementation is used in IDS search.
                 :param limit: Maximum depth

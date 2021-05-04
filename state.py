@@ -24,7 +24,7 @@ class State:
         return h
 
     @staticmethod
-    def successor(state: 'State', map_object: Map) -> list[tuple['State', tuple, int]]:
+    def successor(state: 'State', map_object: Map, reverse=True) -> list[tuple['State', tuple, int]]:
         map_array = map_object.map
         points = map_object.points
         w, h = map_object.w, map_object.h
@@ -50,30 +50,36 @@ class State:
                 return
 
             # Checking if there is a butter around
-            if (robot_y + y, robot_x + x) not in state.butters:  # There is no butters around
+            check_pushing_butter = (robot_y + y, robot_x + x) not in state.butters
+            check_pulling_butter = (robot_y - y, robot_x - x) not in state.butters
+            if not reverse and check_pushing_butter or reverse and check_pulling_butter:  # There is no butters around
                 next_states.append((
                     State((robot_y + y, robot_x + x), state.butters.copy()),
                     (y, x),
-                    max(int(map_array[robot_y+y][robot_x+x]), int(map_array[robot_y][robot_x]))
+                    max(int(map_array[robot_y + y][robot_x + x]), int(map_array[robot_y][robot_x]))
                 ))
             else:  # There is a butter around
                 # Butter not on bound condition
-                if (y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or \
-                        (x == -1 and robot_x != 1) or (x == 1 and robot_x != w - 2):
+                if not reverse and ((y == -1 and robot_y != 1) or (y == 1 and robot_y != h - 2) or
+                                    (x == -1 and robot_x != 1) or (x == 1 and robot_x != w - 2)) or reverse:
 
                     # If butter is on a point
-                    if (robot_y + y, robot_x + x) in points:
+                    if not reverse and (robot_y + y, robot_x + x) in points:
                         return
 
                     # if there is block or another butter behind the butter
                     r2y, r2x = robot_y + 2 * y, robot_x + 2 * x
-                    if is_block(r2y, r2x) or ((r2y, r2x) in state.butters):
+                    if not reverse and (is_block(r2y, r2x) or ((r2y, r2x) in state.butters)):
                         return
 
                     # Moving butter
                     new_butters = state.butters.copy()
-                    new_butters.remove((robot_y + y, robot_x + x))
-                    new_butters.append((r2y, r2x))
+                    if not reverse:
+                        new_butters.remove((robot_y + y, robot_x + x))
+                        new_butters.append((r2y, r2x))
+                    else:
+                        new_butters.remove((robot_y - y, robot_x - x))
+                        new_butters.append((robot_y, robot_x))
                     next_states.append((
                         State((robot_y + y, robot_x + x), new_butters),
                         (y, x),
@@ -93,6 +99,3 @@ class State:
             if butter not in points:
                 return False
         return True
-
-
-
