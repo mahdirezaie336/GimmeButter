@@ -15,7 +15,8 @@ def __main__():
             return
     game_manager = GameManager()
     # Finding way
-    game_manager.start_search(search_type)
+    result = game_manager.start_search(search_type)
+    game_manager.display_states(result)
 
 
 __main__()

@@ -57,34 +57,33 @@ class GameManager:
         result = self.__getattribute__(search_type + '_search')()
 
         # Putting path to goal in list
-        result_list = []
-        watchdog = 0
-        while result is not None:
-            watchdog += 1
-            if watchdog > 1000:
-                raise Exception('Watchdog limit exceeded')
-            result_list.append(result.state)
-            result = result.parent
-        result_list.reverse()
+        if search_type == 'bd_bfs':
+            list1 = GameManager.extract_path_list(result[0])
+            list1.reverse()
+            list2 = GameManager.extract_path_list(result[1])
+            list1.extend(list2)
+            return list1
+        else:
+            result_list = GameManager.extract_path_list(result)
+            result_list.reverse()
+            return result_list
 
+    def display_states(self, states_list: list[State]) -> None:
+        if len(states_list) <= 0:
+            raise Exception('There is no way.')
         # Starting display
         self.display.update(self.init_state)
         self.display.begin_display()
 
-        # Showing way
-        if len(result_list) == 0:
-            print('There is no way.')
-            return
-        for state in result_list:
+        for state in states_list:
             time.sleep(Consts.STEP_TIME)
             self.display.update(state)
-        return result_list
 
-    def bd_bfs_search(self) -> Node:
+    def bd_bfs_search(self) -> (Node, Node):
 
-        frontier1 = [self.init_state]
+        frontier1 = [Node(self.init_state, None, 0, None, 0)]
         frontier2 = []
-        visited1 = {self.init_state: True}
+        visited1 = {}
         visited2 = {}
 
         # Putting Butters into points
@@ -106,10 +105,33 @@ class GameManager:
                 if (new_y, new_x) in new_butters:
                     continue
 
-                frontier2.append(State((new_y, new_x), new_butters.copy()))
+                state = State((new_y, new_x), new_butters.copy())
+                frontier2.append(Node(state, None, 0, None, 0))
 
+        # Starting BFS
+        while len(frontier1) > 0 and len(frontier2) > 0:
+            node1 = frontier1.pop(0)
+            # To handle shortest path
+            if node1.state not in visited1:
+                visited1[node1.state] = node1
 
-        pass
+            node2 = frontier2.pop(0)
+            # To handle shortest path
+            if node2.state not in visited2:
+                visited2[node2.state] = node2
+
+            # If we reach from initial state to goal
+            if node2.state in visited1:
+                return visited1[node2.state], node2
+
+            # If we reach from goal to initial state
+            if node1.state in visited2:
+                return node1, visited2[node1.state]
+
+            actions1 = State.successor(node1.state, self.map)
+            frontier1.extend(node1.expand(actions1))
+            actions2 = State.successor(node2.state, self.map, reverse=True)
+            frontier2.extend(node2.expand(actions2))
 
     def ids_search(self) -> Node:
         # Implementation of DLS to be used in IDS
@@ -159,3 +181,16 @@ class GameManager:
                 return result
         # If there is no result in IDS
         return None
+
+    @staticmethod
+    def extract_path_list(node: Node) -> list[State]:
+        result_list = []
+        watchdog = 0
+        while node is not None:
+            watchdog += 1
+            if watchdog > 1000:
+                raise Exception('Watchdog limit exceeded')
+            result_list.append(node.state)
+            node = node.parent
+
+        return result_list
