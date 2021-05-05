@@ -148,7 +148,7 @@ class GameManager:
 
             next_depth_nodes = []
             for node in node_list2:
-                actions = State.successor(node.state, self.map, reverse=True)
+                actions = State.predecessor(node.state, self.map)
                 for child in node.expand(actions):
                     if child.state not in visited2 and\
                             not GameManager.state_in_list_of_nodes(node.state, next_depth_nodes):

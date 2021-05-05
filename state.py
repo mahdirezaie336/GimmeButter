@@ -31,9 +31,6 @@ class State:
         next_states = []
         robot_y, robot_x = state.robot[0], state.robot[1]
 
-        def is_block(y: int, x: int):
-            return map_array[y][x].lower() == 'x'
-
         def try_move_robot(y: int, x: int):
             """ Tries to move robot and push butters and saves new state in next_states array. """
 
@@ -42,11 +39,11 @@ class State:
                 raise Exception('Diagonal moving is not allowed.')
 
             # Checking bounds
-            if robot_x + x >= map_object.w or robot_x + x < 0 or robot_y + y >= map_object.h or robot_y + y < 0:
+            if map_object.check_out_of_bounds(robot_y + y, robot_x + x):
                 return
 
             # Checking blocks
-            if is_block(robot_y + y, robot_x + x):
+            if map_object.is_block(robot_y + y, robot_x + x):
                 return
 
             # Checking if there is a butter around
@@ -67,7 +64,7 @@ class State:
 
                     # if there is block or another butter behind the butter
                     r2y, r2x = robot_y + 2 * y, robot_x + 2 * x
-                    if is_block(r2y, r2x) or ((r2y, r2x) in state.butters):
+                    if map_object.is_block(r2y, r2x) or ((r2y, r2x) in state.butters):
                         return
 
                     # Moving butter
@@ -84,6 +81,57 @@ class State:
         try_move_robot(0, 1)
         try_move_robot(-1, 0)
         try_move_robot(0, -1)
+
+        return next_states
+
+    @staticmethod
+    def predecessor(state: 'State', map_object: Map) -> list[tuple['State', tuple, int]]:
+        next_states = []
+        robot_y, robot_x = state.robot[0], state.robot[1]
+
+        def try_move_robot(y: int, x: int):
+            """ Tries to move the robot in possible direction. """
+
+            # Checking diagonal movement
+            if x * y != 0:
+                raise Exception('Diagonal moving is not allowed.')
+
+            # Checking bounds
+            if map_object.check_out_of_bounds(robot_y + y, robot_x + x):
+                return
+
+            # Checking blocks
+            if map_object.is_block(robot_y + y, robot_x + x):
+                return
+
+            # If there is a butter forward
+            if (robot_x + x, robot_y + y) in state.butters:
+                return
+
+            # If there is not a butter backward
+            if (robot_y - y, robot_x - x) not in state.butters:
+                next_states.append((
+                    State((robot_y + y, robot_x + x), state.butters.copy()),
+                    (y, x),
+                    max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
+                ))
+            else:
+                # Just moving and not pulling butter
+                next_states.append((
+                    State((robot_y + y, robot_x + x), state.butters.copy()),
+                    (y, x),
+                    max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
+                ))
+
+                # Pulling butter
+                new_butters = state.butters.copy()
+                new_butters.remove((robot_y - y, robot_x - x))
+                new_butters.append((robot_y, robot_x))
+                next_states.append((
+                    State((robot_y + y, robot_x + x), new_butters),
+                    (y, x),
+                    max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
+                ))
 
         return next_states
 
