@@ -137,6 +137,7 @@ class GameManager:
                 if node.state in visited2:
                     return node, visited2[node.state]
 
+            # TODO: Move successor and predecessor calling into node expand function
             next_depth_nodes = []
             for node in node_list1:
                 actions = State.successor(node.state, self.map)

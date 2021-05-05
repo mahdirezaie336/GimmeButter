@@ -105,7 +105,7 @@ class State:
                 return
 
             # If there is a butter forward
-            if (robot_x + x, robot_y + y) in state.butters:
+            if (robot_y + y, robot_x + x) in state.butters:
                 return
 
             # Just moving and not pulling butter
