@@ -1,7 +1,7 @@
 from state import State
 
 
-def zero_heuristic(state):
+def zero_heuristic(state: State) -> int:
     return 0
 
 
@@ -36,8 +36,38 @@ class Node:
         self.children.extend(children)
         return children
 
-    def equals_int_state(self, other: 'Node'):
+    def equals_int_state(self, other: 'Node') -> bool:
         return other.state == self.state
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Node):
+            return False
+        return self.state == other.state and self.action == other.action and self.depth == other.depth
+
+    def __ne__(self, other: object) -> bool:
+        if not isinstance(other, Node):
+            return False
+        return self.state != other.state or self.action != other.action or self.depth != other.depth
+
+    def __gt__(self, other: 'Node') -> bool:
+        if not isinstance(other, Node):
+            raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
+        return self.path_cost + Node.heuristic(self.state) > other.path_cost + Node.heuristic(other.state)
+
+    def __ge__(self, other: 'Node') -> bool:
+        if not isinstance(other, Node):
+            raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
+        return self.path_cost + Node.heuristic(self.state) >= other.path_cost + Node.heuristic(other.state)
+
+    def __lt__(self, other: 'Node') -> bool:
+        if not isinstance(other, Node):
+            raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
+        return self.path_cost + Node.heuristic(self.state) < other.path_cost + Node.heuristic(other.state)
+
+    def __le__(self, other: 'Node') -> bool:
+        if not isinstance(other, Node):
+            raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
+        return self.path_cost + Node.heuristic(self.state) <= other.path_cost + Node.heuristic(other.state)
 
     def __repr__(self):
         return self.__str__()
