@@ -49,6 +49,8 @@ class State:
             # Checking if there is a butter around
             check_pushing_butter = (robot_y + y, robot_x + x) not in state.butters
             check_pulling_butter = (robot_y - y, robot_x - x) not in state.butters
+            if reverse and not check_pushing_butter:
+                return
             if not reverse and check_pushing_butter or reverse and check_pulling_butter:  # There is no butters around
                 next_states.append((
                     State((robot_y + y, robot_x + x), state.butters.copy()),

@@ -115,11 +115,16 @@ class GameManager:
             if node1.state not in visited1:
                 visited1[node1.state] = node1
 
+            self.display.update(node1.state)
+            time.sleep(0.3)
+
             node2 = frontier2.pop(0)
             # To handle shortest path
             if node2.state not in visited2:
                 visited2[node2.state] = node2
 
+            self.display.update(node2.state)
+            time.sleep(0.3)
             # If we reach from initial state to goal
             if node2.state in visited1:
                 return visited1[node2.state], node2
