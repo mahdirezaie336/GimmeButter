@@ -12,6 +12,7 @@ class GameManager:
 
     map: Map
     init_state: State
+    display: Display
 
     def __init__(self):
         self.map = None
@@ -221,15 +222,11 @@ class GameManager:
             result = dls_search(i, 0, root_node)
             if result is not None:
                 return result
-        # If there is no result in IDS
-        return None
 
     def a_star_search(self):
 
         def heuristic(state: State) -> int:
             pass
-
-
 
         pass
 
