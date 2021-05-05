@@ -4,6 +4,7 @@ from constants import Consts
 from screen_manager import Display
 from state import State
 from node import Node
+from queue import PriorityQueue
 import time
 
 
@@ -222,6 +223,15 @@ class GameManager:
                 return result
         # If there is no result in IDS
         return None
+
+    def a_star_search(self):
+
+        def heuristic(state: State) -> int:
+            pass
+
+
+
+        pass
 
     @staticmethod
     def extract_path_list(node: Node) -> list[State]:

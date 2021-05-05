@@ -4,8 +4,13 @@ from state import State
 class Node:
 
     children: list['Node']
+    action: tuple
+    depth: int
+    parent: 'Node'
+    path_cost: int
 
-    def __init__(self, state: State, action: tuple, depth: int, parent: 'Node', path_cost, children=[]):
+    def __init__(self, state: State, action=None, depth=0,
+                 parent=None, path_cost=0, children=[], heuristic=lambda state: 0):
         self.state = state
         self.parent = parent
         self.children = children
