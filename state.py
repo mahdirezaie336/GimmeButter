@@ -86,8 +86,8 @@ class State:
                     ))
 
         try_move_robot(1, 0)
-        try_move_robot(-1, 0)
         try_move_robot(0, 1)
+        try_move_robot(-1, 0)
         try_move_robot(0, -1)
 
         return next_states

@@ -93,7 +93,7 @@ class GameManager:
 
         # Putting the robot in all possible positions around butter
         for i, point in enumerate(self.map.points):
-            for direction in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            for direction in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
                 new_y = point[0] + direction[0]
                 new_x = point[1] + direction[1]
 
@@ -115,16 +115,14 @@ class GameManager:
             if node1.state not in visited1:
                 visited1[node1.state] = node1
 
-            self.display.update(node1.state)
-            time.sleep(0.3)
+            #self.display.update(node1.state)
+            #time.sleep(0.3)
 
             node2 = frontier2.pop(0)
             # To handle shortest path
             if node2.state not in visited2:
                 visited2[node2.state] = node2
 
-            self.display.update(node2.state)
-            time.sleep(0.3)
             # If we reach from initial state to goal
             if node2.state in visited1:
                 return visited1[node2.state], node2
@@ -133,10 +131,31 @@ class GameManager:
             if node1.state in visited2:
                 return node1, visited2[node1.state]
 
+            to_show1 = []
             actions1 = State.successor(node1.state, self.map)
-            frontier1.extend(node1.expand(actions1))
+            for child in node1.expand(actions1):
+                if child.state not in visited1:
+                    to_show1.append(child.state)
+                    frontier1.append(child)
             actions2 = State.successor(node2.state, self.map, reverse=True)
-            frontier2.extend(node2.expand(actions2))
+            to_show2 = []
+            for child in node2.expand(actions2):
+                if child.state not in visited2:
+                    to_show2.append(child.state)
+                    frontier2.append(child)
+
+            if True:
+                for state in to_show2:
+                    self.display.marks.append(state.robot)
+                self.display.update(node2.state)
+                for _ in range(len(self.display.marks)):
+                    self.display.marks.pop()
+
+                for state in to_show1:
+                    self.display.marks.append(state.robot)
+                self.display.update(node1.state)
+                for _ in range(len(self.display.marks)):
+                    self.display.marks.pop()
 
     def ids_search(self) -> Node:
         # Implementation of DLS to be used in IDS

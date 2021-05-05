@@ -17,6 +17,7 @@ class Display:
         self.w = w
         self.h = h
         self.points = map_object.points
+        self.marks = []                      # Used in debugging
 
         # PyGame part
         pygame.init()
@@ -47,6 +48,8 @@ class Display:
         self.robot_image = pygame.transform.scale(self.robot_image, (cell_size, cell_size))
         self.x_image = pygame.image.load(Consts.X_IMAGE)
         self.x_image = pygame.transform.scale(self.x_image, (cell_size, cell_size))
+        self.mark_image = pygame.image.load(Consts.MARK_IMAGE)
+        self.mark_image = pygame.transform.scale(self.mark_image, (cell_size, cell_size))
 
         self.draw_cells()
         pygame.display.update()
@@ -57,6 +60,8 @@ class Display:
         self.draw_in_position(robot_y, robot_x, self.robot_image)
         for butter in state.butters:
             self.draw_in_position(butter[0], butter[1], self.butter_image)
+        for mark in self.marks:
+            self.draw_in_position(mark[0], mark[1], self.mark_image)
         pygame.display.update()
 
     def draw_cells(self):
@@ -106,6 +111,7 @@ class Display:
 
         # Starting thread
         self.display_thread = threading.Thread(name='Display', target=infinite_loop)
+        self.display_thread.setDaemon(False)
         self.display_thread.start()
 
     @staticmethod
