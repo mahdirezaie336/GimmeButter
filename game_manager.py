@@ -156,7 +156,7 @@ class GameManager:
             frontier2.append(next_depth_nodes)
 
             if True:
-                for node in node_list1:
+                for node in node_list2:
                     depth = node.depth
                     self.display.update(node.state)
                     pass

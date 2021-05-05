@@ -108,21 +108,15 @@ class State:
             if (robot_x + x, robot_y + y) in state.butters:
                 return
 
-            # If there is not a butter backward
-            if (robot_y - y, robot_x - x) not in state.butters:
-                next_states.append((
-                    State((robot_y + y, robot_x + x), state.butters.copy()),
-                    (y, x),
-                    max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
-                ))
-            else:
-                # Just moving and not pulling butter
-                next_states.append((
-                    State((robot_y + y, robot_x + x), state.butters.copy()),
-                    (y, x),
-                    max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
-                ))
+            # Just moving and not pulling butter
+            next_states.append((
+                State((robot_y + y, robot_x + x), state.butters.copy()),
+                (y, x),
+                max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
+            ))
 
+            # If there is a butter backward
+            if (robot_y - y, robot_x - x) in state.butters:
                 # Pulling butter
                 new_butters = state.butters.copy()
                 new_butters.remove((robot_y - y, robot_x - x))
@@ -132,6 +126,11 @@ class State:
                     (y, x),
                     max(int(map_object.map[robot_y + y][robot_x + x]), int(map_object.map[robot_y][robot_x]))
                 ))
+
+        try_move_robot(1, 0)
+        try_move_robot(0, 1)
+        try_move_robot(-1, 0)
+        try_move_robot(0, -1)
 
         return next_states
 
