@@ -142,18 +142,19 @@ class GameManager:
             for node in node_list1:
                 actions = State.successor(node.state, self.map)
                 for child in node.expand(actions):
-                    if child.state not in visited1 and\
-                            not GameManager.state_in_list_of_nodes(node.state, next_depth_nodes):
-                        next_depth_nodes.append(child)
+                    if child.state not in visited1:
+                        if GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
+                            next_depth_nodes.append(child)
             frontier1.append(next_depth_nodes)
 
             next_depth_nodes = []
+            found = True
             for node in node_list2:
                 actions = State.predecessor(node.state, self.map)
                 for child in node.expand(actions):
-                    if child.state not in visited2 and\
-                            not GameManager.state_in_list_of_nodes(node.state, next_depth_nodes):
-                        next_depth_nodes.append(child)
+                    if child.state not in visited2:
+                        if not GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
+                            next_depth_nodes.append(child)
             frontier2.append(next_depth_nodes)
 
             if True:
