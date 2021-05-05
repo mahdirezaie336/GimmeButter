@@ -143,7 +143,7 @@ class GameManager:
                 actions = State.successor(node.state, self.map)
                 for child in node.expand(actions):
                     if child.state not in visited1:
-                        if GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
+                        if not GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
                             next_depth_nodes.append(child)
             frontier1.append(next_depth_nodes)
 
@@ -158,7 +158,7 @@ class GameManager:
             frontier2.append(next_depth_nodes)
 
             if True:
-                for node in node_list2:
+                for node in node_list1:
                     depth = node.depth
                     self.display.update(node.state)
                     pass
