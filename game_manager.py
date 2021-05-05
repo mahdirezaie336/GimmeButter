@@ -4,7 +4,7 @@ from constants import Consts
 from screen_manager import Display
 from state import State
 from node import Node
-from queue import PriorityQueue
+from heap_hashtable import MaxHeap
 import time
 
 
@@ -89,7 +89,7 @@ class GameManager:
         frontier1: list[list[Node]]
         frontier2: list[list[Node]]
 
-        frontier1 = [[Node(self.init_state, None, 0, None, 0)]]
+        frontier1 = [[Node(self.init_state)]]
         frontier2 = []
         visited1 = {}
         visited2 = {}
@@ -115,7 +115,7 @@ class GameManager:
                     continue
 
                 state = State((new_y, new_x), new_butters.copy())
-                all_goal_states.append(Node(state, None, 0, None, 0))
+                all_goal_states.append(Node(state))
 
         frontier2.append(all_goal_states)
 
@@ -217,16 +217,31 @@ class GameManager:
         for i in range(Consts.FIRST_K, Consts.LAST_K):
             print('Starting with depth', i)
             cur_time = time.time()
-            root_node = Node(self.init_state, None, 0, None, 0)
+            root_node = Node(self.init_state)
             visited_states = {}
             result = dls_search(i, 0, root_node)
             if result is not None:
                 return result
 
-    def a_star_search(self):
+    def a_star_search(self) -> Node:
 
         def heuristic(state: State) -> int:
             pass
+
+        heap = MaxHeap()
+        root_node = Node(self.init_state)
+        heap.put(root_node)
+        while not heap.empty():
+            node = heap.get()
+
+            # Checking goal state
+            if State.is_goal(node.state):
+                return node
+
+            # A* search
+            actions = State.successor(node.state, self.map)
+            for child in node.expand(actions):
+                heap.put(child)
 
         pass
 

@@ -42,12 +42,12 @@ class Node:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Node):
             return False
-        return self.state == other.state and self.action == other.action and self.depth == other.depth
+        return self.state == other.state
 
     def __ne__(self, other: object) -> bool:
         if not isinstance(other, Node):
             return False
-        return self.state != other.state or self.action != other.action or self.depth != other.depth
+        return self.state != other.state
 
     def __gt__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
