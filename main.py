@@ -16,6 +16,7 @@ def __main__():
     game_manager = GameManager()
     # Finding way
     result = game_manager.start_search(search_type)
+    print('Total moves:', len(result))
     game_manager.display_states(result)
 
 

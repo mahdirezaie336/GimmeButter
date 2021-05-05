@@ -60,6 +60,8 @@ class GameManager:
         if search_type == 'bd_bfs':
             list1 = GameManager.extract_path_list(result[0])
             list1.reverse()
+            list1.pop()
+            list1.pop(0)
             list2 = GameManager.extract_path_list(result[1])
             list1.extend(list2)
             return list1
@@ -70,7 +72,8 @@ class GameManager:
 
     def display_states(self, states_list: list[State]) -> None:
         if len(states_list) <= 0:
-            raise Exception('There is no way.')
+            print('There is no way')
+            return
         # Starting display
         self.display.update(self.init_state)
         self.display.begin_display()
@@ -115,7 +118,7 @@ class GameManager:
         frontier2.append(all_goal_states)
 
         # Starting BFS
-        while len(frontier1) > 0 and len(frontier2) > 0:
+        while (len(frontier1) > 0 or len(frontier2) > 0) and (frontier1 != [[]] or frontier2 != [[]]):
             node_list1 = frontier1.pop(0)
             for node in node_list1:
                 visited1[node.state] = node
@@ -138,6 +141,7 @@ class GameManager:
                     return node, visited2[node.state]
 
             # TODO: Move successor and predecessor calling into node expand function
+            # Add successors to frontier
             next_depth_nodes = []
             for node in node_list1:
                 actions = State.successor(node.state, self.map)
@@ -147,6 +151,7 @@ class GameManager:
                             next_depth_nodes.append(child)
             frontier1.append(next_depth_nodes)
 
+            # Add predecessors to frontier
             next_depth_nodes = []
             found = True
             for node in node_list2:
@@ -157,7 +162,7 @@ class GameManager:
                             next_depth_nodes.append(child)
             frontier2.append(next_depth_nodes)
 
-            if True:
+            if False:
                 for node in node_list1:
                     depth = node.depth
                     self.display.update(node.state)
@@ -166,6 +171,8 @@ class GameManager:
                 #    depth = node.depth
                 #    print('In depth', depth)
                 #    self.display.update(node.state)
+
+        return None, None
 
     def ids_search(self) -> Node:
         # Implementation of DLS to be used in IDS
