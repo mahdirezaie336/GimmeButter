@@ -1,4 +1,4 @@
-class MaxHeap:
+class MinHeap:
 
     def __init__(self, array=[], index_table={}):
         self.array = array
@@ -9,19 +9,19 @@ class MaxHeap:
         for i in range(len(self.array) // 2).__reversed__():
             self.min_heapify(i)
         for index, vertex in enumerate(self.array):
-            self.index_table[vertex.identity] = index
+            self.index_table[vertex.get_identity()] = index
 
     def add(self, vertex):
         index = len(self.array)
         self.array.append(vertex)
-        self.index_table[vertex.identity] = index
+        self.index_table[vertex.get_identity()] = index
         self.min_up_heapify(index)
 
     def remove(self, vertex_id=None, index=None):
         if index is None:
             index = self.index_table[vertex_id]
         last_item = self.array[-1]
-        self.index_table[last_item.identity] = index
+        self.index_table[last_item.get_identity()] = index
         self.array[index] = last_item
 
         del self.index_table[vertex_id]
@@ -39,11 +39,14 @@ class MaxHeap:
 
     def pop(self):
         root = self.array[0]
-        self.remove(self.array[0].identity, 0)
+        self.remove(self.array[0].get_identity(), 0)
         return root
 
+    def is_empty(self):
+        return len(self.array) == 0
+
     def value_of(self, vertex_id):
-        return self.array[self.index_table[vertex_id]].value
+        return self.array[self.index_table[vertex_id]]
 
     def get_vertex(self, vertex_id):
         index = self.index_table[vertex_id]
@@ -54,14 +57,14 @@ class MaxHeap:
         # subtrees which both are heaps.
         le = self.left(i)
         ri = self.right(i)
-        smallest = self.maximum(le, ri, i)
+        smallest = self.minimum(le, ri, i)
         if smallest != i:
             self.swap(i, smallest)
             self.min_heapify(smallest)
 
     def min_up_heapify(self, i):
         pa = self.parent(i)
-        smallest = self.maximum(pa, i)
+        smallest = self.minimum(pa, i)
         if smallest != pa:
             self.swap(pa, i)
             self.min_up_heapify(pa)
@@ -89,15 +92,15 @@ class MaxHeap:
         self.array[i] = self.array[j]
         self.array[j] = temp
 
-        self.index_table[self.array[i].identity] = i
-        self.index_table[self.array[j].identity] = j
+        self.index_table[self.array[i].get_identity()] = i
+        self.index_table[self.array[j].get_identity()] = j
 
-    def maximum(self, *index):
-        largest = index[0]
+    def minimum(self, *index):
+        smallest = index[0]
         for i in index:
-            if self.array[i] > self.array[largest]:
-                largest = i
-        return largest
+            if self.array[i] < self.array[smallest]:
+                smallest = i
+        return smallest
 
     def __str__(self):
         return self.array.__str__()

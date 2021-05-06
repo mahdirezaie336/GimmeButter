@@ -39,35 +39,28 @@ class Node:
     def equals_int_state(self, other: 'Node') -> bool:
         return other.state == self.state
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Node):
-            return False
-        return self.state == other.state
-
-    def __ne__(self, other: object) -> bool:
-        if not isinstance(other, Node):
-            return False
-        return self.state != other.state
+    def get_identity(self):
+        return self.state
 
     def __gt__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) > other.path_cost + Node.heuristic(other.state)
+        return self.path_cost + Node.heuristic(self.state) < other.path_cost + Node.heuristic(other.state)
 
     def __ge__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) >= other.path_cost + Node.heuristic(other.state)
+        return self.path_cost + Node.heuristic(self.state) <= other.path_cost + Node.heuristic(other.state)
 
     def __lt__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) < other.path_cost + Node.heuristic(other.state)
+        return self.path_cost + Node.heuristic(self.state) > other.path_cost + Node.heuristic(other.state)
 
     def __le__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) <= other.path_cost + Node.heuristic(other.state)
+        return self.path_cost + Node.heuristic(self.state) >= other.path_cost + Node.heuristic(other.state)
 
     def __repr__(self):
         return self.__str__()

@@ -1,15 +1,15 @@
 class Consts:
 
     # Map
-    MAP_FILE = './map1.txt'
+    MAP_FILE = './map3.txt'
 
     # IDS
     FIRST_K = 1
     LAST_K = 50
 
     # PyGame Window Features
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
+    SCREEN_WIDTH = 640
+    SCREEN_HEIGHT = 480
     BACKGROUND = 198, 163, 138
     SCREEN_MARGIN_SIZE = 40
     CELL_COLOR = 131, 60, 11
@@ -20,5 +20,5 @@ class Consts:
     MARK_IMAGE = './images/mark.png'
 
     # Times
-    STEP_TIME = 0.2
+    STEP_TIME = 0.4
     FPS = 24

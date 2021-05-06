@@ -6,9 +6,9 @@ import sys
 
 def __main__():
     arg = sys.argv
-    search_type = 'bd_bfs'
+    search_type = 'a_star'
     if len(arg) > 1:
-        if arg[1] in ['ids', 'a_start', 'bd_bfs']:
+        if arg[1] in ['ids', 'a_star', 'bd_bfs']:
             search_type = arg[1]
         else:
             print('\n\nUse "ids" or "a_star" or "bd_bfs" as argument.')

@@ -4,7 +4,7 @@ from constants import Consts
 from screen_manager import Display
 from state import State
 from node import Node
-from heap_hashtable import MaxHeap
+from heap_hashtable import MinHeap
 import time
 
 
@@ -225,23 +225,47 @@ class GameManager:
 
     def a_star_search(self) -> Node:
 
-        def heuristic(state: State) -> int:
-            pass
+        def euclid_distance(point1: tuple[int, int], point2: tuple[int, int]) -> float:
+            return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
 
-        heap = MaxHeap()
+        def heuristic(state: State) -> int:
+            # Finding closest butter
+            closest_butter = state.butters[0]
+            min_d_to_butter = float('inf')
+            for butter in state.butters:
+                d = euclid_distance(butter, state.robot)
+                if d < min_d_to_butter:
+                    min_d_to_butter = d
+                    closest_butter = butter
+
+            # Finding closest point to butter
+            min_d_to_point = float('inf')
+            for point in self.map.points:
+                d = euclid_distance(point, butter)
+                if d < min_d_to_point:
+                    min_d_to_point = d
+
+            return int(min_d_to_point + min_d_to_butter)
+
+        Node.heuristic = heuristic
+
+        heap = MinHeap()
         root_node = Node(self.init_state)
-        heap.put(root_node)
-        while not heap.empty():
-            node = heap.get()
+        heap.add(root_node)
+        while not heap.is_empty():
+            node = heap.pop()
+
+            time.sleep(0.5)
+            self.display.update(node.state)
 
             # Checking goal state
-            if State.is_goal(node.state):
+            if State.is_goal(node.state, self.map.points):
                 return node
 
             # A* search
             actions = State.successor(node.state, self.map)
             for child in node.expand(actions):
-                heap.put(child)
+                heap.add(child)
 
         pass
 
