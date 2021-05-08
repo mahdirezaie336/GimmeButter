@@ -228,6 +228,15 @@ class GameManager:
         def euclid_distance(point1: tuple[int, int], point2: tuple[int, int]) -> float:
             return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
 
+        def manhattan_distance(point1: tuple[int, int], point2: tuple[int, int]) -> int:
+            d1 = point1[0] - point2[0]
+            d2 = point1[1] - point2[1]
+            if d1 < 0:
+                d1 *= -1
+            if d2 < 0:
+                d2 *= -1
+            return d1 + d2
+
         def heuristic(state: State) -> int:
             # Finding closest butter
             closest_butter = state.butters[0]
@@ -241,7 +250,7 @@ class GameManager:
             # Finding closest point to butter
             min_d_to_point = float('inf')
             for point in self.map.points:
-                d = euclid_distance(point, butter)
+                d = euclid_distance(point, closest_butter)
                 if d < min_d_to_point:
                     min_d_to_point = d
 
@@ -257,6 +266,7 @@ class GameManager:
 
             time.sleep(0.5)
             self.display.update(node.state)
+            print(node.path_cost + heuristic(node.state))
 
             # Checking goal state
             if State.is_goal(node.state, self.map.points):
