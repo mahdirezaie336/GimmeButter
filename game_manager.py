@@ -70,8 +70,8 @@ class GameManager:
         if len(states_list) <= 0:
             print('There is no way')
             return
-        # Starting display
-        self.display.update(self.init_state)
+
+        self.display.update(self.init_state)                            # Starting display
         self.display.begin_display()
 
         for state in states_list:
@@ -80,68 +80,52 @@ class GameManager:
 
     def bd_bfs_search(self) -> list[Node]:
 
-        # Bidirectional BFS for two nodes
-        def bd_bfs(init: State, goal: State) -> (Node, Node):
-            frontier1: list[list[Node]]
-            frontier2: list[list[Node]]
+        def bd_bfs(init: State, goal: State) -> (Node, Node):           # Bidirectional BFS for two nodes
 
-            frontier1 = [[Node(init)]]
-            frontier2 = [[Node(goal)]]
+            frontier1 = [Node(init)]
+            frontier2 = [Node(goal)]
             visited1 = {}
             visited2 = {}
 
-            # Starting BFS loop
-            while (len(frontier1) > 0 or len(frontier2) > 0) and (frontier1 != [[]] or frontier2 != [[]]):
-                node_list1 = frontier1.pop(0)
-                for node in node_list1:
-                    visited1[node.state] = node
+            while len(frontier1) > 0 and len(frontier2) > 0:            # Starting BFS loop
+                node_1 = frontier1.pop(0)
+                visited1[node_1.state] = node_1
 
-                node_list2 = frontier2.pop(0)
-                for node in node_list2:
-                    visited2[node.state] = node
+                node_2 = frontier2.pop(0)
+                visited2[node_2.state] = node_2
 
-                # If we reach from initial state to goal
-                for node in node_list2:
-                    if node.state in visited1:
-                        return visited1[node.state], node
+                if node_2.state in visited1:                            # If we reach from initial state to goal
+                    return visited1[node_2.state], node_2
 
-                # If we reach from goal to initial state
-                for node in node_list1:
-                    if node.state in visited2:
-                        return node, visited2[node.state]
+                if node_1.state in visited2:                            # If we reach from goal to initial state
+                    return node_1, visited2[node_1.state]
 
                 # TODO: Move successor and predecessor calling into node expand function
-                # Add successors to frontier
-                next_depth_nodes = []
-                for node in node_list1:
-                    actions = State.successor(node.state, self.map)
-                    for child in node.expand(actions):
-                        if child.state not in visited1:
-                            if not GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
-                                next_depth_nodes.append(child)
-                frontier1.append(next_depth_nodes)
+                actions = State.successor(node_1.state, self.map)       # Add successors to frontier
+                for child in node_1.expand(actions):
+                    if child.state not in visited1:
+                        frontier1.append(child)
 
-                # Add predecessors to frontier
-                next_depth_nodes = []
-                for node in node_list2:
-                    actions = State.predecessor(node.state, self.map)
-                    for child in node.expand(actions):
-                        if child.state not in visited2:
-                            if not GameManager.state_in_list_of_nodes(child.state, next_depth_nodes):
-                                next_depth_nodes.append(child)
-                frontier2.append(next_depth_nodes)
+                actions = State.predecessor(node_2.state, self.map)     # Add predecessors to frontier
+                for child in node_2.expand(actions):
+                    if child.state not in visited2:
+                        frontier2.append(child)
+
+                if True:
+                    self.display.update(node_2.state)
+                    pass
+
+            return None, None
 
         #########################################################################
         # Here we find all possible goal node and do bidirectional bfs two by two
         #########################################################################
 
-        # Putting Butters into points to create goal state
-        new_butters = self.init_state.butters.copy()
+        new_butters = self.init_state.butters.copy()                # Putting Butters into points to create goal state
         for i, point in enumerate(self.map.points):
             new_butters[i] = point
 
-        all_goal_states = []
-        # Putting the robot in all possible positions around butter
+        all_goal_states = []                            # Putting the robot in all possible positions around butter
         for i, point in enumerate(self.map.points):
             for direction in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
                 new_y = point[0] + direction[0]
@@ -158,26 +142,29 @@ class GameManager:
                 state = State((new_y, new_x), new_butters.copy())
                 all_goal_states.append(state)
 
-        # Do Bidirectional BFS two by two
-        shortest_list = []
+        shortest_list = []                                                  # Do Bidirectional BFS two by two
         shortest_length = float('inf')
+        all_goal_states.reverse()
         for goal_state in all_goal_states:
             node1, node2 = bd_bfs(self.init_state, goal_state)
-            list1 = GameManager.extract_path_list(node1)            # Converting nodes to list
-            list1.reverse()
-            list1.pop()
-            list1.pop(0)
-            list2 = GameManager.extract_path_list(node2)
-            list1.extend(list2)
-            if len(list1) < shortest_length:                        # Setting the minimum
-                shortest_length = len(list1)
-                shortest_list = list1
+            if node1 is None or node2 is None:
+                continue
+
+            result_list = GameManager.extract_path_list(node1)              # Converting nodes to list
+            result_list.reverse()
+            result_list.pop()
+            result_list.pop(0)
+            result_list.extend(GameManager.extract_path_list(node2))
+            if len(result_list) < shortest_length:                          # Setting the minimum
+                print(len(result_list))
+                shortest_length = len(result_list)
+                shortest_list = result_list
 
         return shortest_list
 
     def ids_search(self) -> Node:
-        # Implementation of DLS to be used in IDS
-        def dls_search(limit: int, depth: int, node: Node) -> Node:
+
+        def dls_search(limit: int, depth: int, node: Node) -> Node:         # Implementation of DLS to be used in IDS
             """ This DLS implementation is used in IDS search.
                 :param limit: Maximum depth
                 :param depth: The explored depth until now
@@ -200,8 +187,7 @@ class GameManager:
                     if State.is_goal(child.state, self.map.points):
                         return child
 
-                    # Recursive calling
-                    r = dls_search(limit, depth + 1, child)
+                    r = dls_search(limit, depth + 1, child)         # Recursive calling
                     if r is not None:
                         res = r
                         break
@@ -212,8 +198,7 @@ class GameManager:
 
             return res
 
-        # IDS Implementation
-        for i in range(Consts.FIRST_K, Consts.LAST_K):
+        for i in range(Consts.FIRST_K, Consts.LAST_K):              # IDS Implementation
             print('Starting with depth', i)
             cur_time = time.time()
             root_node = Node(self.init_state)
