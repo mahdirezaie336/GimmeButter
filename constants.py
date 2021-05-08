@@ -1,7 +1,7 @@
 class Consts:
 
     # Map
-    MAP_FILE = './map3.txt'
+    MAP_FILE = './maps/map3.txt'
 
     # IDS
     FIRST_K = 1
