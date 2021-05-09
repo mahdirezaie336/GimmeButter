@@ -59,7 +59,7 @@ class GameManager:
         result = self.__getattribute__(search_type + '_search')()
 
         # Putting path to goal in list
-        if search_type == 'bd_bfs':
+        if search_type in ['bd_bfs', 'reverse_bfs']:
             return result
         else:
             result_list = GameManager.extract_path_list(result)
@@ -261,7 +261,90 @@ class GameManager:
             for child in node.expand(actions):
                 heap.add(child)
 
-        pass
+    def reverse_bfs_search(self) -> list[State]:
+
+        def reverse_bfs(goal: State):
+
+            frontier = [Node(goal)]
+            visited = {}
+
+            while len(frontier) > 0:  # Starting BFS loop
+                node_1 = frontier.pop(0)
+                visited[node_1.state] = node_1
+
+                if node_1.state == self.init_state:
+                    return node_1
+
+                # TODO: Move successor and predecessor calling into node expand function
+                actions = State.predecessor(node_1.state, self.map)  # Add successors to frontier
+                for child in node_1.expand(actions):
+                    if child.state not in visited:
+                        frontier.append(child)
+
+                if False:
+                    self.display.update(node_2.state)
+                    pass
+
+        new_butters = self.init_state.butters.copy()  # Putting Butters into points to create goal state
+        for i, point in enumerate(self.map.points):
+            new_butters[i] = point
+
+        all_goal_states = []  # Putting the robot in all possible positions around butter
+        for i, point in enumerate(self.map.points):
+            for direction in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+                new_y = point[0] + direction[0]
+                new_x = point[1] + direction[1]
+
+                # Checking out of bounds or blocks
+                if self.map.check_out_of_bounds(new_y, new_x) or self.map.is_block(new_y, new_x):
+                    continue
+
+                # Checking butters around butter
+                if (new_y, new_x) in new_butters:
+                    continue
+
+                state = State((new_y, new_x), new_butters.copy())
+                all_goal_states.append(state)
+
+        shortest_list = []  # Do Bidirectional BFS two by two
+        shortest_length = float('inf')
+        all_goal_states.reverse()
+        for goal_state in all_goal_states:
+
+            node1 = reverse_bfs(goal_state)
+            if node1 is None:
+                continue
+
+            result_list = GameManager.extract_path_list(node1)  # Converting nodes to list
+            result_list.reverse()
+            if len(result_list) < shortest_length:  # Setting the minimum
+                print(len(result_list))
+                shortest_length = len(result_list)
+                shortest_list = result_list
+
+        return shortest_list
+
+    def bfs_search(self) -> Node:
+
+        frontier = [Node(self.init_state)]
+        visited = {}
+
+        while len(frontier) > 0:  # Starting BFS loop
+            node_1 = frontier.pop(0)
+            visited[node_1.state] = node_1
+
+            if State.is_goal(node_1.state, self.map.points):
+                return node_1
+
+            # TODO: Move successor and predecessor calling into node expand function
+            actions = State.successor(node_1.state, self.map)  # Add successors to frontier
+            for child in node_1.expand(actions):
+                if child.state not in visited:
+                    frontier.append(child)
+
+            if False:
+                self.display.update(node_2.state)
+                pass
 
     @staticmethod
     def extract_path_list(node: Node) -> list[State]:
