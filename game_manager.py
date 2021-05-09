@@ -20,6 +20,10 @@ class GameManager:
         self.display = Display(self.map)
 
     def start_search(self, search_type: str) -> list[State]:
+        """ Chooses a search between all and returns its result list.
+            :param search_type Search algorithm type
+            :returns The result of search"""
+
         result = self.__getattribute__(search_type + '_search')()
 
         # Putting path to goal in list
@@ -31,6 +35,9 @@ class GameManager:
             return result_list
 
     def display_states(self, states_list: list[State]) -> None:
+        """ Gets a list of states and displays it into display object.
+            :param states_list List of states to show """
+
         if len(states_list) <= 0:
             print('There is no way')
             return
@@ -43,8 +50,14 @@ class GameManager:
             self.display.update(state)
 
     def bd_bfs_search(self) -> list[Node]:
+        """ Performs a bidirectional BFS from initial state to all goal states.
+            :returns List of states to reach from init to goal"""
 
         def bd_bfs(init: State, goal: State) -> (Node, Node):           # Bidirectional BFS for two nodes
+            """ Performs a bidirectional BFS from a state to a specific goal state.
+                :param init The initial state
+                :param goal The specific goal state
+                :returns Two nodes in which the two searches meet together. """
 
             init_node = Node(init)
             goad_node = Node(goal)
@@ -125,6 +138,8 @@ class GameManager:
         return shortest_list
 
     def ids_search(self) -> Node:
+        """ Performs an iterative deepening search from initial state to goal.
+            :returns The node which contains goal state"""
 
         def dls_search(limit: int, depth: int, node: Node) -> Node:         # Implementation of DLS to be used in IDS
             """ This DLS implementation is used in IDS search.
@@ -170,11 +185,15 @@ class GameManager:
                 return result
 
     def a_star_search(self) -> Node:
+        """ Performs an A* search from initial state to goal state.
+            :returns The node containing the goal state."""
 
         def euclid_distance(point1: tuple[int, int], point2: tuple[int, int]) -> float:
+            """ Finds euclid distance between two points. """
             return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
 
         def manhattan_distance(point1: tuple[int, int], point2: tuple[int, int]) -> int:
+            """ Finds manhattan distance between to points. """
             d1 = point1[0] - point2[0]
             d2 = point1[1] - point2[1]
             if d1 < 0:
@@ -184,6 +203,9 @@ class GameManager:
             return d1 + d2
 
         def heuristic(state: State) -> int:
+            """ The heuristic function which evaluates steps from a state to goal.
+                :param state The state to evaluate."""
+
             # Finding closest butter
             closest_butter = state.butters[0]
             min_d_to_butter = float('inf')
@@ -202,9 +224,9 @@ class GameManager:
 
             return int(min_d_to_point + min_d_to_butter)
 
-        Node.heuristic = heuristic
+        Node.heuristic = heuristic                                          # Setting all nodes heuristic functions
 
-        heap = MinHeap()
+        heap = MinHeap()                                                    # Beginning of a star search
         root_node = Node(self.init_state)
         heap.add(root_node)
         while not heap.is_empty():
@@ -299,20 +321,21 @@ class GameManager:
 
     @staticmethod
     def parse_map() -> (Map, State):
+        """ Uses map file to create map object in game.
+            :returns The map object and the init state"""
+
         map_array = FileIO.read_line_by_line(Consts.MAP_FILE)
         sizes = map_array.pop(0)
         h, w = int(sizes[0]), int(sizes[1])
         map_object = Map(h, w)
 
-        # Variables to read from map
-        butters = []
+        butters = []                                            # Variables to read from map
         points = []
         robot = (0, 0)
         for j, row in enumerate(map_array):
             for i, col in enumerate(row):
 
-                # If there is an object in map
-                if len(col) > 1:
+                if len(col) > 1:                                # If there is an object in map
                     if col[1] == 'b':
                         butters.append((j, i))
                     elif col[1] == 'p':
@@ -321,15 +344,17 @@ class GameManager:
                         robot = (j, i)
                     row[i] = col[0]
 
-            # Append row to map
-            map_object.append_row(row)
+            map_object.append_row(row)                          # Append row to map
 
-        # Setting map and init state
         map_object.set_points(points)
         return map_object, State(robot, butters)
 
     @staticmethod
     def extract_path_list(node: Node) -> list[State]:
+        """ Gets a node and returns a list of states which contains all states from root to the node.
+            :param node The node to get its path
+            :returns The list of all states from root to the node"""
+
         result_list = []
         watchdog = 0
         while node is not None:
