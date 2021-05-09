@@ -15,45 +15,9 @@ class GameManager:
     display: Display
 
     def __init__(self):
-        self.map = None
-        self.init_state = None
-        self.display = None
-
-        # Reading map file
-        self.parse_map()
-
+        self.map, self.init_state = self.parse_map()
         # After parsing map it's time to start pygame
         self.display = Display(self.map)
-
-    def parse_map(self):
-        map_array = FileIO.read_line_by_line(Consts.MAP_FILE)
-        sizes = map_array.pop(0)
-        h, w = int(sizes[0]), int(sizes[1])
-        self.map = Map(h, w)
-
-        # Variables to read from map
-        butters = []
-        points = []
-        robot = (0, 0)
-        for j, row in enumerate(map_array):
-            for i, col in enumerate(row):
-
-                # If there is an object in map
-                if len(col) > 1:
-                    if col[1] == 'b':
-                        butters.append((j, i))
-                    elif col[1] == 'p':
-                        points.append((j, i))
-                    elif col[1] == 'r':
-                        robot = (j, i)
-                    row[i] = col[0]
-
-            # Append row to map
-            self.map.append_row(row)
-
-        # Setting map and init state
-        self.map.set_points(points)
-        self.init_state = State(robot, butters)
 
     def start_search(self, search_type: str) -> list[State]:
         result = self.__getattribute__(search_type + '_search')()
@@ -82,17 +46,17 @@ class GameManager:
 
         def bd_bfs(init: State, goal: State) -> (Node, Node):           # Bidirectional BFS for two nodes
 
+            init_node = Node(init)
+            goad_node = Node(goal)
             frontier1 = [Node(init)]
             frontier2 = [Node(goal)]
-            visited1 = {}
-            visited2 = {}
+            visited1 = {init: init_node}
+            visited2 = {goal: goad_node}
 
             while len(frontier1) > 0 and len(frontier2) > 0:            # Starting BFS loop
                 node_1 = frontier1.pop(0)
-                visited1[node_1.state] = node_1
 
                 node_2 = frontier2.pop(0)
-                visited2[node_2.state] = node_2
 
                 if node_2.state in visited1:                            # If we reach from initial state to goal
                     return visited1[node_2.state], node_2
@@ -105,15 +69,13 @@ class GameManager:
                 for child in node_1.expand(actions):
                     if child.state not in visited1:
                         frontier1.append(child)
+                        visited1[child.state] = child
 
                 actions = State.predecessor(node_2.state, self.map)     # Add predecessors to frontier
                 for child in node_2.expand(actions):
                     if child.state not in visited2:
                         frontier2.append(child)
-
-                if True:
-                    self.display.update(node_2.state)
-                    pass
+                        visited2[child.state] = child
 
             return None, None
 
@@ -144,7 +106,7 @@ class GameManager:
 
         shortest_list = []                                                  # Do Bidirectional BFS two by two
         shortest_length = float('inf')
-        all_goal_states.reverse()
+        print('Found', len(all_goal_states), 'possible ways.')
         for goal_state in all_goal_states:
             node1, node2 = bd_bfs(self.init_state, goal_state)
             if node1 is None or node2 is None:
@@ -156,7 +118,7 @@ class GameManager:
             result_list.pop(0)
             result_list.extend(GameManager.extract_path_list(node2))
             if len(result_list) < shortest_length:                          # Setting the minimum
-                print(len(result_list))
+                print('Found a way with', len(result_list), 'moves.')
                 shortest_length = len(result_list)
                 shortest_list = result_list
 
@@ -266,24 +228,19 @@ class GameManager:
         def reverse_bfs(goal: State):
 
             frontier = [Node(goal)]
-            visited = {}
+            visited = {goal: True}
 
             while len(frontier) > 0:  # Starting BFS loop
-                node_1 = frontier.pop(0)
-                visited[node_1.state] = node_1
+                node = frontier.pop(0)
 
-                if node_1.state == self.init_state:
-                    return node_1
+                if node.state == self.init_state:
+                    return node
 
-                # TODO: Move successor and predecessor calling into node expand function
-                actions = State.predecessor(node_1.state, self.map)  # Add successors to frontier
-                for child in node_1.expand(actions):
+                actions = State.predecessor(node.state, self.map)  # Add successors to frontier
+                for child in node.expand(actions):
                     if child.state not in visited:
                         frontier.append(child)
-
-                if False:
-                    self.display.update(node_2.state)
-                    pass
+                        visited[child.state] = True
 
         new_butters = self.init_state.butters.copy()  # Putting Butters into points to create goal state
         for i, point in enumerate(self.map.points):
@@ -316,7 +273,6 @@ class GameManager:
                 continue
 
             result_list = GameManager.extract_path_list(node1)  # Converting nodes to list
-            result_list.reverse()
             if len(result_list) < shortest_length:  # Setting the minimum
                 print(len(result_list))
                 shortest_length = len(result_list)
@@ -336,15 +292,41 @@ class GameManager:
             if State.is_goal(node_1.state, self.map.points):
                 return node_1
 
-            # TODO: Move successor and predecessor calling into node expand function
             actions = State.successor(node_1.state, self.map)  # Add successors to frontier
             for child in node_1.expand(actions):
                 if child.state not in visited:
                     frontier.append(child)
 
-            if False:
-                self.display.update(node_2.state)
-                pass
+    @staticmethod
+    def parse_map() -> (Map, State):
+        map_array = FileIO.read_line_by_line(Consts.MAP_FILE)
+        sizes = map_array.pop(0)
+        h, w = int(sizes[0]), int(sizes[1])
+        map_object = Map(h, w)
+
+        # Variables to read from map
+        butters = []
+        points = []
+        robot = (0, 0)
+        for j, row in enumerate(map_array):
+            for i, col in enumerate(row):
+
+                # If there is an object in map
+                if len(col) > 1:
+                    if col[1] == 'b':
+                        butters.append((j, i))
+                    elif col[1] == 'p':
+                        points.append((j, i))
+                    elif col[1] == 'r':
+                        robot = (j, i)
+                    row[i] = col[0]
+
+            # Append row to map
+            map_object.append_row(row)
+
+        # Setting map and init state
+        map_object.set_points(points)
+        return map_object, State(robot, butters)
 
     @staticmethod
     def extract_path_list(node: Node) -> list[State]:
