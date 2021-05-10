@@ -207,23 +207,16 @@ class GameManager:
             """ The heuristic function which evaluates steps from a state to goal.
                 :param state The state to evaluate."""
 
-            # Finding closest butter
-            closest_butter = state.butters[0]
-            min_d_to_butter = float('inf')
+            sum_of_distances = 0
             for butter in state.butters:
-                d = manhattan_distance(butter, state.robot)
-                if d < min_d_to_butter:
-                    min_d_to_butter = d
-                    closest_butter = butter
+                min_d_to_point = float('inf')
+                for point in self.map.points:
+                    d = manhattan_distance(point, butter)
+                    if d < min_d_to_point:
+                        min_d_to_point = d
+                sum_of_distances += min_d_to_point
 
-            # Finding closest point to butter
-            min_d_to_point = float('inf')
-            for point in self.map.points:
-                d = manhattan_distance(point, closest_butter)
-                if d < min_d_to_point:
-                    min_d_to_point = d
-
-            return int(min_d_to_point + min_d_to_butter)
+            return sum_of_distances
 
         Node.heuristic = heuristic                                          # Setting all nodes heuristic functions
 
