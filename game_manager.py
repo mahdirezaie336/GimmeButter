@@ -32,6 +32,7 @@ class GameManager:
             return result
         else:
             result_list = GameManager.extract_path_list(result)
+            result_list.pop()
             result_list.reverse()
             return result_list
 
