@@ -6,6 +6,7 @@ from state import State
 from node import Node
 from heap_hashtable import MinHeap
 import time
+import heapq
 
 
 class GameManager:
@@ -210,7 +211,7 @@ class GameManager:
             closest_butter = state.butters[0]
             min_d_to_butter = float('inf')
             for butter in state.butters:
-                d = euclid_distance(butter, state.robot)
+                d = manhattan_distance(butter, state.robot)
                 if d < min_d_to_butter:
                     min_d_to_butter = d
                     closest_butter = butter
@@ -218,7 +219,7 @@ class GameManager:
             # Finding closest point to butter
             min_d_to_point = float('inf')
             for point in self.map.points:
-                d = euclid_distance(point, closest_butter)
+                d = manhattan_distance(point, closest_butter)
                 if d < min_d_to_point:
                     min_d_to_point = d
 
@@ -227,18 +228,20 @@ class GameManager:
         Node.heuristic = heuristic                                          # Setting all nodes heuristic functions
 
         heap = MinHeap()                                                    # Beginning of a star search
+        visited = set()
         root_node = Node(self.init_state)
         heap.add(root_node)
         while not heap.is_empty():
             node = heap.pop()
 
-            time.sleep(0.5)
-            self.display.update(node.state)
-            print(node.path_cost + heuristic(node.state))
-
             # Checking goal state
             if State.is_goal(node.state, self.map.points):
                 return node
+
+            if node.state not in visited:
+                visited.add(node.state)
+            else:
+                continue
 
             # A* search
             actions = State.successor(node.state, self.map)

@@ -103,7 +103,7 @@ class MinHeap:
         return smallest
 
     def __str__(self):
-        return self.array.__str__()
+        return str(self.array)
 
     def __contains__(self, vertex_id):
         return vertex_id in self.index_table

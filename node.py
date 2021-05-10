@@ -42,28 +42,31 @@ class Node:
     def get_identity(self):
         return self.state
 
+    def get_cost(self):
+        return self.path_cost + Node.heuristic(self.state)
+
     def __gt__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) < other.path_cost + Node.heuristic(other.state)
+        return self.get_cost() > other.get_cost()
 
     def __ge__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) <= other.path_cost + Node.heuristic(other.state)
+        return self.get_cost() >= other.get_cost()
 
     def __lt__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) > other.path_cost + Node.heuristic(other.state)
+        return self.get_cost() < other.get_cost()
 
     def __le__(self, other: 'Node') -> bool:
         if not isinstance(other, Node):
             raise TypeError('Error while comparing object with type', type(other), 'and a Node object')
-        return self.path_cost + Node.heuristic(self.state) >= other.path_cost + Node.heuristic(other.state)
+        return self.get_cost() <= other.get_cost()
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return 'State: ' + str(self.state) + ' | Depth' + str(self.depth)
+        return 'State: ' + str(self.state) + ' | Cost: ' + str(self.get_cost())
