@@ -35,14 +35,18 @@ By the following command you can install.
 Use one of these command to run the game:
 
 > python3 main.py a_star
+
 > python3 main.py bd_bfs
+
 > python3 main.py ids
 
 In Windows you can use 'python' instead of python3.
 In Linux you can also run by one of these commands:
 
 > ./main.py a_star
+
 > ./main.py bd_bfs
+
 > ./main.py ids
 
 
