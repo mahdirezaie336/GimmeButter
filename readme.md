@@ -22,4 +22,28 @@ After finding shortest path, the output will be something like this:
 
 ![Output Animation](README_files/result.gif)
 
+<br>
+
+# Requirements
+
+Before run you need to install required libraries. You can install these libraries by requirements.txt file.
+By the following command you can install.
+
+> pip install -r requirements.txt
+
+# Run the Game
+Use one of these command to run the game:
+
+> python3 main.py a_star
+> python3 main.py bd_bfs
+> python3 main.py ids
+
+In Windows you can use 'python' instead of python3.
+In Linux you can also run by one of these commands:
+
+> ./main.py a_star
+> ./main.py bd_bfs
+> ./main.py ids
+
+
 
