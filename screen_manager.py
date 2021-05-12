@@ -54,7 +54,7 @@ class Display:
         self.draw_cells()
         pygame.display.update()
 
-    def update(self, state: State):
+    def update(self, state: State, save=False):
         self.draw_cells()
         robot_y, robot_x = state.robot
         self.draw_in_position(robot_y, robot_x, self.robot_image)
