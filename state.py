@@ -3,7 +3,6 @@ from map import Map
 
 class State:
 
-    # TODO: Immutable making
     def __init__(self, robot: tuple, butters=[]):
         self.robot = robot
         self.butters = butters
