@@ -15,8 +15,9 @@ def __main__():
             return
     game_manager = GameManager()
     # Finding way
-    result = game_manager.start_search(search_type)
-    print('Total moves:', len(result))
+    result, depth, cost = game_manager.start_search(search_type)
+    print('Total moves:', depth)
+    print('Total cost:', cost)
     game_manager.display_states(result)
 
 

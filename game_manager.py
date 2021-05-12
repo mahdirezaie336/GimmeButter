@@ -6,7 +6,6 @@ from state import State
 from node import Node
 from heap_hashtable import MinHeap
 import time
-import heapq
 
 
 class GameManager:
@@ -20,10 +19,10 @@ class GameManager:
         # After parsing map it's time to start pygame
         self.display = Display(self.map)
 
-    def start_search(self, search_type: str) -> list[State]:
+    def start_search(self, search_type: str) -> (list[State], int, int):
         """ Chooses a search between all and returns its result list.
             :param search_type Search algorithm type
-            :returns The result of search"""
+            :returns The result of search """
 
         result = self.__getattribute__(search_type + '_search')()
 
@@ -34,7 +33,7 @@ class GameManager:
             result_list = GameManager.extract_path_list(result)
             result_list.pop()
             result_list.reverse()
-            return result_list
+            return result_list, result.depth, result.path_cost
 
     def display_states(self, states_list: list[State]) -> None:
         """ Gets a list of states and displays it into display object.
@@ -51,7 +50,7 @@ class GameManager:
             time.sleep(Consts.STEP_TIME)
             self.display.update(state)
 
-    def bd_bfs_search(self) -> list[Node]:
+    def bd_bfs_search(self) -> (list[Node], int, int):
         """ Performs a bidirectional BFS from initial state to all goal states.
             :returns List of states to reach from init to goal"""
 
@@ -121,6 +120,8 @@ class GameManager:
 
         shortest_list = []                                                  # Do Bidirectional BFS two by two
         shortest_length = float('inf')
+        shortest_path_cost = float('inf')
+
         print('Found', len(all_goal_states), 'possible ways.')
         for goal_state in all_goal_states:
             node1, node2 = bd_bfs(self.init_state, goal_state)
@@ -136,8 +137,9 @@ class GameManager:
                 print('Found a way with', len(result_list), 'moves.')
                 shortest_length = len(result_list)
                 shortest_list = result_list
+                shortest_path_cost = node1.path_cost + node2.path_cost
 
-        return shortest_list
+        return shortest_list, shortest_length, shortest_path_cost
 
     def ids_search(self) -> Node:
         """ Performs an iterative deepening search from initial state to goal.
