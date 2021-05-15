@@ -1,4 +1,4 @@
-# Searching Robot
+# Gimme Butter
 
 This game is a practice of three AI search algorithms:
 
