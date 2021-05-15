@@ -30,7 +30,9 @@ After finding shortest path, the output will be something like this:
 Before run you need to install required libraries. You can install these libraries by requirements.txt file.
 By the following command you can install.
 
-> pip install -r requirements.txt
+```
+$ pip install -r requirements.txt
+```
 
 # Run the Game
 Use one of these command to run the game:
