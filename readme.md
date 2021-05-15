@@ -59,7 +59,9 @@ $ ./main.py a_star
 ```
 $ ./main.py bd_bfs
 ```
-> ./main.py ids
 
+```
+$ ./main.py ids
+```
 
 
