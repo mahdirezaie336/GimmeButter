@@ -1,37 +1,162 @@
-## Welcome to GitHub Pages
+<div id="top"></div>
 
-You can use the [editor on GitHub](https://github.com/mahdirezaie336/GimmeButter/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#gimme-butter">Gimme Butter</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#run-the-game">Run the Game</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+<!-- Gimme Butter -->
+# Gimme Butter
 
-```markdown
-Syntax highlighted code block
+This game is a practice of three AI search algorithms:
 
-# Header 1
-## Header 2
-### Header 3
+ - A* Algorithm
+ - Bidirectional BFS
+ - Iterative Deepening Search
 
-- Bulleted
-- List
+The game is about a robot which tries to serve customer ASAP. At first, There is a bunch of foods on a table and all foods are given to the customers previously except for butter. This robot's duty is to give butter to the customer by putting it on a specific position on the table.
 
-1. Numbered
-2. List
+The robot's sensors gets a first perception of items on table at first.  The sensor driver puts that perception as a text file with the following format into a specific directory:
 
-**Bold** and _Italic_ and `Code` text
+![First Perception](README_files/input.png)
 
-[Link](url) and ![Image](src)
+First line is width and height of table. Other lines describes the table items. Items are these:
+ - Numbers are cost of moving over that part of table.
+ - 'r' is the position of the robot itself.
+ - 'b' is the first position of a butter.
+ - 'p' is a point to put a butter on it.
+ - 'x' is block with other foods
+ 
+After finding shortest path, the output will be something like this:
+
+![Output Animation](README_files/result.gif)
+
+<br>
+
+<!-- Bulit With -->
+## Built With
+This project is created by pure <a href="https://www.python.org">python3</a>.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+# Getting Started
+In this section we are explaining how to run this game.
+
+## Requirements
+Before running you need to install required libraries. You can install these libraries by requirements.txt file.
+By the following command you can install.
+
+```
+$ pip install -r requirements.txt
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Run the Game
+Use one of these command to run the game:
 
-### Jekyll Themes
+```
+$ python3 main.py a_star
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/mahdirezaie336/GimmeButter/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```
+$ python3 main.py bd_bfs
+```
 
-### Support or Contact
+```
+$ python3 main.py ids
+```
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+In Windows you can use 'python' instead of python3.
+In Linux you can also run by one of these commands:
+
+```
+$ ./main.py a_star
+```
+
+```
+$ ./main.py bd_bfs
+```
+
+```
+$ ./main.py ids
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- CONTRIBUTING -->
+# Contributing
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- LICENSE.txt -->
+# License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+# Contact
+
+Mahdi Rezaie - [@mahdirezaie336](https://twitter.com/mahdirezaie336) - mahdi.rezaie.336@gmail.com
+
+Project Link: [https://github.com/mahdirezaie336/GimmeButter](https://github.com/mahdirezaie336/GimmeButter)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/mahdirezaie336/GimmeButter.svg?style=for-the-badge
+[contributors-url]: https://github.com/mahdirezaie336/GimmeButter/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/mahdirezaie336/GimmeButter.svg?style=for-the-badge
+[forks-url]: https://github.com/mahdirezaie336/GimmeButter/network/members
+[stars-shield]: https://img.shields.io/github/stars/mahdirezaie336/GimmeButter.svg?style=for-the-badge
+[stars-url]: https://github.com/mahdirezaie336/GimmeButter/stargazers
+[issues-shield]: https://img.shields.io/github/issues/mahdirezaie336/GimmeButter.svg?style=for-the-badge
+[issues-url]: https://github.com/mahdirezaie336/GimmeButter/issues
+[license-shield]: https://img.shields.io/github/license/mahdirezaie336/GimmeButter.svg?style=for-the-badge
+[license-url]: https://github.com/mahdirezaie336/GimmeButter/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/mahdirezaie336
+[product-screenshot]: images/screenshot.png
+
