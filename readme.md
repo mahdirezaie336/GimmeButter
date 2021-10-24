@@ -126,7 +126,7 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-<!-- LICENSE -->
+<!-- LICENSE.txt -->
 # License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
