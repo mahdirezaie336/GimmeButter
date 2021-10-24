@@ -58,6 +58,9 @@ After finding shortest path, the output will be something like this:
 ## Built With
 This project is created by pure <a href="https://www.python.org">python3</a>.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
 # Getting Started
 In this section we are explaining how to run this game.
 
